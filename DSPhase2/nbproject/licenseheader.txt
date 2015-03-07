@@ -1,0 +1,7 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}CS4262 Distributed Systems Mini Project
+<#if licenseLast??>
+${licenseLast}
+</#if>
