@@ -21,7 +21,9 @@ public class SuperNode extends Node{
         children = new ArrayList<>();
     }
     
-    
+    /*
+        Register supernode in the server
+    */    
     @Override
     public void register(){
         String sentence;

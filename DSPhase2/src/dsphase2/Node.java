@@ -25,6 +25,10 @@ public class Node {
     public int getPort(){
         return port;
     }
+    
+    /*
+        Register node in super node
+    */
     public void register(){
         
     }

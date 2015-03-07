@@ -7,6 +7,9 @@ package dsphase2;
 import java.io.*;
 import java.net.*;
 
+/*
+    This is a test class
+*/
 class TCPClient
 {
  public static void main(String argv[]) throws Exception

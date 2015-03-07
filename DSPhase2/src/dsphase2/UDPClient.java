@@ -17,6 +17,10 @@ import java.net.UnknownHostException;
  *
  * @author TOSHIBA
  */
+
+/*
+    This is a test class
+*/
 public class UDPClient {
  public static void main(String args[]) throws Exception 
     { 
