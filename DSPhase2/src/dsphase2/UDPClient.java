@@ -48,8 +48,8 @@ public class UDPClient {
       System.out.println ("Sending data to " + sendData.length + 
                           " bytes to server.");
       DatagramPacket sendPacket = 
-        // new DatagramPacket(sendData, sendData.length, IPAddress, 9876); 
-      new DatagramPacket(sendData, sendData.length, IPAddress, 9877); 
+         new DatagramPacket(sendData, sendData.length, IPAddress, 9876); 
+     // new DatagramPacket(sendData, sendData.length, IPAddress, 9877); 
   
       clientSocket.send(sendPacket); 
   
@@ -57,7 +57,7 @@ public class UDPClient {
          new DatagramPacket(receiveData, receiveData.length); 
   
       System.out.println ("Waiting for return packet");
-      clientSocket.setSoTimeout(10000);
+      clientSocket.setSoTimeout(1000000);
 
       try {
            clientSocket.receive(receivePacket); 
