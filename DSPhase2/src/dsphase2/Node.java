@@ -29,7 +29,8 @@ public class Node extends Thread{
     
     public static Node getInstance(){
         if(instance==null){
-            instance = new Node("127.0.0.1",5000,"abcd");
+            //instance = new Node("127.0.0.1",5000,"abcd");
+            instance = new Node("129.82.123.45",5001,"abcd");
         }
         return instance;
     }
@@ -55,8 +56,11 @@ public class Node extends Thread{
         
         String message = "REG"+" "+myIp+" "+myPort+" "+myName;
         message="00"+message.length()+" "+message;
-        System.out.println(message);
-        String response = sendTCPMessage(message,bootstrapIp,booStrapPort);
+        System.out.println("inside register: "+message);
+        
+        //String response = sendTCPMessage(message,bootstrapIp,booStrapPort);
+        
+        String response = sendTCPMessage("0036 REG 129.82.123.45 5001 1234abcd",bootstrapIp,booStrapPort);
         
         System.out.println("Response:"+response);
         String[] splitted = response.split(" ");
@@ -144,9 +148,9 @@ public class Node extends Thread{
              outToServer = new PrintWriter(clientSocket.getOutputStream(),true);
   
              inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
           
-            outToServer.println(sentence);       
+            outToServer.println(sentence);  
+             //outToServer.println("0036 REG 129.82.123.45 5001 1234abcd");  
 
            buf=new char[100];
 
