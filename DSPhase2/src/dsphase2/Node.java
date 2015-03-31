@@ -14,6 +14,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -27,10 +29,10 @@ public class Node extends Thread{
     private static Node instance=null;
     private boolean superNode;
     
-    public static Node getInstance(){
+    public static Node getInstance(String ip,int port, String name){
         if(instance==null){
-            //instance = new Node("127.0.0.1",5000,"abcd");
-            instance = new Node("129.82.123.45",5001,"1234abcd");
+          //  instance = new Node("127.0.0.1",5000,"abcd");
+            instance = new Node(ip,port,name);
         }
         return instance;
     }
@@ -55,34 +57,19 @@ public class Node extends Thread{
     private void register(String myIp, int myPort, String myName, String bootstrapIp, int booStrapPort){
         
         String message = "REG"+" "+myIp+" "+myPort+" "+myName;
-        int messageLength = message.length()+4+1;
-        String messageLengthString = Integer.toString(messageLength);
-        String prefix="";
-        switch(messageLengthString.length()){
-            case 1: prefix="000"+messageLengthString+" ";
-                break;
-            case 2:prefix = "00"+messageLengthString+" ";
-                break;
-            case 3:prefix="0"+messageLengthString+" ";
-                break;
-            case 4: prefix=messageLengthString+" ";
-                break;
-        }
-        message=prefix+message;
-        System.out.println("inside register: "+message);
-        
+
+        message = appendLength(message);
         String response = sendTCPMessage(message,bootstrapIp,booStrapPort);
         
         //String response = sendTCPMessage("0036 REG 129.82.123.45 5001 1234abcd",bootstrapIp,booStrapPort);
         
         System.out.println("Response:"+response);
         String[] splitted = response.split(" ");
+
         String noOfNodes=splitted[2];
         String[] peerIps = new String[2];
         int[] peerPorts = new int[2];
-        for (String splitted1 : splitted) {
-            System.out.println(splitted1);
-        }
+
         System.out.println(noOfNodes);
         switch(noOfNodes.trim()){
             case "0":superNode=true;
@@ -94,10 +81,10 @@ public class Node extends Thread{
                     break;
             case "2":if(isSuper()){
                         superNode=true;
-                    }                    
+                    }  
                     for(int i=0;i<2;i++){
-                        peerIps[i]=splitted[2*i+3];
-                        peerPorts[i]=Integer.parseInt(splitted[2*i+3+1]);
+                        peerIps[i]=splitted[3*i+3];
+                        peerPorts[i]=Integer.parseInt(splitted[3*i+3+1]);
                         System.out.println(joinNetwork(myIp, myPort, peerIps[i], peerPorts[i]));
                     }
                     break;
@@ -115,9 +102,18 @@ public class Node extends Thread{
         }
     }
     
+    private void unregister(String myIp, int myPort, String myName, String bootstrapIp, int booStrapPort){
+        String message = "UNREG"+" "+myIp+" "+myPort+" "+myName;
+        
+        message=appendLength(message);
+        
+       // System.out.println(message);
+        sendTCPMessage(message, bootstrapIp, booStrapPort);
+    }
+    
     private String joinNetwork(String myIp, int myPort, String peerIp, int peerPort){
         String message="JOIN"+" "+myIp+" "+myPort;
-        message="00"+message.length()+" "+message;
+        message=appendLength(message);
         String response =  sendUDPMessage(message, peerIp, peerPort);
         return response;
     }
@@ -129,6 +125,25 @@ public class Node extends Thread{
         else{
             return false;
         }
+    }
+    
+    private String appendLength(String message){
+         int messageLength = message.length()+4+1;
+        String messageLengthString = Integer.toString(messageLength);
+        String prefix="";
+        switch(messageLengthString.length()){
+            case 1: prefix="000"+messageLengthString+" ";
+                break;
+            case 2:prefix = "00"+messageLengthString+" ";
+                break;
+            case 3:prefix="0"+messageLengthString+" ";
+                break;
+            case 4: prefix=messageLengthString+" ";
+                break;
+        }
+        message=prefix+message;
+        
+        return message;
     }
     
     private String sendUDPMessage(String message, String ip, int port){
@@ -202,7 +217,10 @@ public class Node extends Thread{
     
     @Override
     public void run(){
-        register(ip,port,name,"localhost",9876);   
-       // sendMessage("0036 REG 129.82.123.45 5001 1234abcd", "localhost",9876);
+        //register(ip,port,name,"localhost",9876);   
+
+        unregister(ip, port, name, "localhost",9876);
     }
+    
+
 }
