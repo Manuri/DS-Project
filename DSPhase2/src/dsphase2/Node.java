@@ -30,7 +30,7 @@ public class Node extends Thread{
     public static Node getInstance(){
         if(instance==null){
             //instance = new Node("127.0.0.1",5000,"abcd");
-            instance = new Node("129.82.123.45",5001,"abcd");
+            instance = new Node("129.82.123.45",5001,"1234abcd");
         }
         return instance;
     }
@@ -55,12 +55,25 @@ public class Node extends Thread{
     private void register(String myIp, int myPort, String myName, String bootstrapIp, int booStrapPort){
         
         String message = "REG"+" "+myIp+" "+myPort+" "+myName;
-        message="00"+message.length()+" "+message;
+        int messageLength = message.length()+4+1;
+        String messageLengthString = Integer.toString(messageLength);
+        String prefix="";
+        switch(messageLengthString.length()){
+            case 1: prefix="000"+messageLengthString+" ";
+                break;
+            case 2:prefix = "00"+messageLengthString+" ";
+                break;
+            case 3:prefix="0"+messageLengthString+" ";
+                break;
+            case 4: prefix=messageLengthString+" ";
+                break;
+        }
+        message=prefix+message;
         System.out.println("inside register: "+message);
         
-        //String response = sendTCPMessage(message,bootstrapIp,booStrapPort);
+        String response = sendTCPMessage(message,bootstrapIp,booStrapPort);
         
-        String response = sendTCPMessage("0036 REG 129.82.123.45 5001 1234abcd",bootstrapIp,booStrapPort);
+        //String response = sendTCPMessage("0036 REG 129.82.123.45 5001 1234abcd",bootstrapIp,booStrapPort);
         
         System.out.println("Response:"+response);
         String[] splitted = response.split(" ");
