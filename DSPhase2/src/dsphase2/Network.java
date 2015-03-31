@@ -10,8 +10,8 @@ package dsphase2;
  */
 public class Network {
     public static void main(String[] args) {
-        SuperNode sn = new SuperNode("localhost",9876);
+        Node n = Node.getInstance();
         
-        sn.register();
+        n.start();
     }
 }

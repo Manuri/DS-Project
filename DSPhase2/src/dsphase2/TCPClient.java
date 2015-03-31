@@ -13,18 +13,31 @@ import java.net.*;
 class TCPClient
 {
  public static void main(String argv[]) throws Exception
- {
-  String sentence;
-  String modifiedSentence;
-  BufferedReader inFromUser = new BufferedReader( new InputStreamReader(System.in));
-  Socket clientSocket = new Socket("localhost", 9876);
-  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-  sentence = inFromUser.readLine();
-  //outToServer.writeBytes(sentence + '\n');
-  outToServer.writeBytes(sentence);
-  modifiedSentence = inFromServer.readLine();
-  System.out.println("FROM SERVER: " + modifiedSentence);
-  clientSocket.close();
+ {   
+     
+     String sentence;
+  
+    String modifiedSentence;
+
+    BufferedReader inFromUser = new BufferedReader( new InputStreamReader(System.in));
+
+    Socket clientSocket = new Socket("localhost", 9876);
+
+    PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(),true);
+
+    BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+  
+   outToServer.println("0036 REG 129.82.123.45 5001 1234abcd");       
+
+  char[] buf=new char[100];
+  
+   inFromServer.read(buf);
+   System.out.println(buf);
+    
+  outToServer.close();
+  inFromServer.close();
+  
+  clientSocket.close(); 
+
  }
 }
