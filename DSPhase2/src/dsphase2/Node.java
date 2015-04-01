@@ -109,6 +109,7 @@ public class Node extends Thread{
         
        // System.out.println(message);
         sendTCPMessage(message, bootstrapIp, booStrapPort);
+       // sendTCPMessage("0038 UNREG 129.82.123.45 5001 1234abcd", bootstrapIp, booStrapPort);
     }
     
     private String joinNetwork(String myIp, int myPort, String peerIp, int peerPort){
