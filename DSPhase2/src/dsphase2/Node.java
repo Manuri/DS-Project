@@ -12,10 +12,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -67,26 +64,20 @@ public class Node extends Thread{
         String[] splitted = response.split(" ");
 
         String noOfNodes=splitted[2];
-        String[] peerIps = new String[2];
-        int[] peerPorts = new int[2];
+        String[] peerIps ;
+        int[] peerPorts ;
 
         System.out.println(noOfNodes);
+
         switch(noOfNodes.trim()){
             case "0":superNode=true;
                     break;
             case "1":superNode=true;
+                    peerIps = new String[1];
+                    peerPorts = new int[1];
                     peerIps[0]=splitted[3];
                     peerPorts[0]=Integer.parseInt(splitted[4]);
                     System.out.println(joinNetwork(ip, port, peerIps[0], peerPorts[0]));
-                    break;
-            case "2":if(isSuper()){
-                        superNode=true;
-                    }  
-                    for(int i=0;i<2;i++){
-                        peerIps[i]=splitted[3*i+3];
-                        peerPorts[i]=Integer.parseInt(splitted[3*i+3+1]);
-                        System.out.println(joinNetwork(myIp, myPort, peerIps[i], peerPorts[i]));
-                    }
                     break;
             case "9996":System.out.println("Failed, can’t register. BS full.");
                         break;
@@ -97,7 +88,23 @@ public class Node extends Thread{
             case "9999":System.out.println("Failed, there is some error in the command");
                         break;
                     
-                    
+            default:if(isSuper()){
+                        superNode=true;
+                    }
+                    int number = Integer.parseInt(noOfNodes);
+                    peerIps=new String[number];
+                    peerPorts=new int[number];
+                    System.out.println("number:"+number);
+                    for(int i=1;i<number+1;i++){
+                        peerIps[i-1]=splitted[3*i];
+                        peerPorts[i-1]=Integer.parseInt(splitted[3*i+1]);
+                        System.out.println(peerIps[i-1]+","+peerPorts[i-1]);
+                        //System.out.println(joinNetwork(myIp, myPort, peerIps[i-1], peerPorts[i-1]));
+                    } 
+                    for(int i=0;i<2;i++){
+                        int[] array= getRandomTwo(number);
+                        System.out.println(joinNetwork(myIp, myPort, peerIps[array[i]], peerPorts[array[i]]));
+                    }
                 
         }
     }
@@ -126,6 +133,18 @@ public class Node extends Thread{
         else{
             return false;
         }
+    }
+    
+    private int[] getRandomTwo(int number){
+        int rand1 = (int) (Math.random()*1000%number);
+        int rand2 = (int) (Math.random()*1000%(number));
+        
+        while(rand1==rand2){
+            rand2=(int) ((Math.random()*1000)%(number));
+        }
+        int[] array = {rand1,rand2};
+        return array;
+        
     }
     
     private String appendLength(String message){
@@ -181,7 +200,7 @@ public class Node extends Thread{
             outToServer.println(sentence);  
              //outToServer.println("0036 REG 129.82.123.45 5001 1234abcd");  
 
-           buf=new char[100];
+           buf=new char[1000];
 
             inFromServer.read(buf);
             System.out.println(buf); 
@@ -218,9 +237,9 @@ public class Node extends Thread{
     
     @Override
     public void run(){
-        //register(ip,port,name,"localhost",9876);   
+       register(ip,port,name,"localhost",9876);   
 
-        unregister(ip, port, name, "localhost",9876);
+      //unregister(ip, port, name, "localhost",9876);
     }
     
 

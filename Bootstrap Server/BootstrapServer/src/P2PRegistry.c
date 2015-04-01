@@ -227,10 +227,14 @@ void receivedata(int sockfd)
     else if (strcmp("UNREG", string_token) == 0) //Check whether the command is valid.
     {
         int i;
+
         string_token = strtok(NULL, " ");   //Break at the 3rd space
+ 
         for (i = 0; i < TABLE_SIZE; i++)
         {
-            if ((strncmp(peer_table[i].key, string_token, 8) == 0) && (peer_table[i].valid == 1))
+          //  printf("%s\n",peer_table[i].key);
+            //if ((strncmp(peer_table[i].key, string_token, 8) == 0) && (peer_table[i].valid == 1))
+            if ((strncmp(peer_table[i].IP, string_token, 8) == 0) && (peer_table[i].valid == 1))
             {
                 peer_table[i].valid = 0;
                 no_peers--;
