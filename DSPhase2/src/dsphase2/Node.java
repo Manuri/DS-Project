@@ -4,16 +4,6 @@
 
 package dsphase2;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 
 /**
  *
@@ -25,9 +15,7 @@ public class Node extends Thread{
     private final String name;
     private static Node instance=null;
     private boolean superNode;
-  //  private final String bsIp;
-   // private final int bsPort;
-    private Communicator com;
+    private final Communicator com;
     
     public static Node getInstance(String ip,int port, String name, String bsIp, int bsPort){
         if(instance==null){
@@ -40,8 +28,6 @@ public class Node extends Thread{
         this.ip=ip;
         this.port=port; 
         this.name=name;
-        //this.bsIp=bsIp;
-        //this.bsPort=bsPort;
         com = new Communicator(bsIp, bsPort);
     }
     
@@ -60,7 +46,6 @@ public class Node extends Thread{
         
         String message=(new Message(MessageType.REG,ip,port,name)).getMessage();
 
-       // String response = sendTCPMessage(message); 
         String response = com.sendTCPMessage(message);
         
         System.out.println("Response:"+response);
@@ -114,14 +99,12 @@ public class Node extends Thread{
     private void unregister(){
         String message =(new Message(MessageType.UNREG,ip,port,name)).getMessage();
 
-        //sendTCPMessage(message);
         com.sendTCPMessage(message);
     }
     
     private String joinNetwork( String peerIp, int peerPort){
         String message=(new Message(MessageType.JOIN,ip,port,name)).getMessage();
         
-        //String response =  sendUDPMessage(message, peerIp, peerPort);
         String response = com.sendUDPMessage(message, peerIp, peerPort);
         
         return response;
