@@ -25,8 +25,9 @@ public class Node extends Thread{
     private final String name;
     private static Node instance=null;
     private boolean superNode;
-    private final String bsIp;
-    private final int bsPort;
+  //  private final String bsIp;
+   // private final int bsPort;
+    private Communicator com;
     
     public static Node getInstance(String ip,int port, String name, String bsIp, int bsPort){
         if(instance==null){
@@ -39,8 +40,9 @@ public class Node extends Thread{
         this.ip=ip;
         this.port=port; 
         this.name=name;
-        this.bsIp=bsIp;
-        this.bsPort=bsPort;
+        //this.bsIp=bsIp;
+        //this.bsPort=bsPort;
+        com = new Communicator(bsIp, bsPort);
     }
     
     public String getIp(){
@@ -58,7 +60,8 @@ public class Node extends Thread{
         
         String message=(new Message(MessageType.REG,ip,port,name)).getMessage();
 
-        String response = sendTCPMessage(message);        
+       // String response = sendTCPMessage(message); 
+        String response = com.sendTCPMessage(message);
         
         System.out.println("Response:"+response);
         String[] splitted = response.split(" ");
@@ -111,13 +114,15 @@ public class Node extends Thread{
     private void unregister(){
         String message =(new Message(MessageType.UNREG,ip,port,name)).getMessage();
 
-        sendTCPMessage(message);
+        //sendTCPMessage(message);
+        com.sendTCPMessage(message);
     }
     
     private String joinNetwork( String peerIp, int peerPort){
         String message=(new Message(MessageType.JOIN,ip,port,name)).getMessage();
         
-        String response =  sendUDPMessage(message, peerIp, peerPort);
+        //String response =  sendUDPMessage(message, peerIp, peerPort);
+        String response = com.sendUDPMessage(message, peerIp, peerPort);
         
         return response;
     }
@@ -141,77 +146,14 @@ public class Node extends Thread{
         int[] array = {rand1,rand2};
         return array;
         
-    }
+    }    
 
-    
-    private String sendUDPMessage(String message, String ip, int port){
-        try{
-            DatagramSocket clientSocket = new DatagramSocket(); 
-            InetAddress IPAddress = InetAddress.getByName(ip); 
-            
-            byte[] toSend  = message.getBytes(); 
-		  
-            DatagramPacket packet =new DatagramPacket(toSend, toSend.length, IPAddress, port); 
-		    
-            clientSocket.send(packet); 
-            }
-        catch(IOException ioe){
-            System.out.println(ioe.getMessage());
-	}
-        return null;
-    }
-    
-    private String sendTCPMessage(String sentence){
-        System.out.println("inside send message"+sentence);
-        
-        Socket clientSocket = null;
-        PrintWriter outToServer=null;
-        BufferedReader inFromServer=null;
-        char[] buf=null;
-        try{
-            clientSocket = new Socket(bsIp, bsPort);
-            
-             outToServer = new PrintWriter(clientSocket.getOutputStream(),true);
-  
-             inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-          
-            outToServer.println(sentence);   
-
-           buf=new char[1000];
-
-            inFromServer.read(buf);
-            System.out.println(buf); 
-        }
-        catch(UnknownHostException e){
-            System.out.println(e.getMessage());
-        } 
-        catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-        finally{
-            try {
-                if(outToServer!=null)
-                    outToServer.close();
-                
-                if(inFromServer!=null)
-                    inFromServer.close();
-                
-                if(clientSocket!=null)
-                    clientSocket.close();
-                
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-        
-        return String.valueOf(buf);
-    }
     
     @Override
     public void run(){
-       //register();   
+       register();   
 
-      unregister();
+      //unregister();
     }
     
 
