@@ -12,19 +12,31 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
  *
  * @author Amaya
  */
-public class Communicator {
+public class Sender {
     private final String bootstrapIP;
     private final int bootStrapPort;
+    private static Sender instance=null;
     
-    public Communicator(String ip, int port){
-        bootstrapIP=ip;
-        bootStrapPort=port;
+    private Sender(){
+        bootstrapIP=Config.BOOTSTRAP_IP;
+        bootStrapPort=Config.BOOTSTRAP_PORT;
+    }
+    
+    public static Sender getInstance(){
+        if(instance==null){
+            instance = new Sender();
+            return instance;
+        }
+        else{
+            return instance;
+        }
     }
     
     public String sendUDPMessage(String message, String peerIp, int peerPort){

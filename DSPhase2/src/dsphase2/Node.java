@@ -4,31 +4,33 @@
 
 package dsphase2;
 
+import java.util.Observable;
+import java.util.Observer;
+
 
 /**
  *
  * @author Amaya
  */
-public class Node extends Thread{
+public class Node implements Observer{
     private final String ip;
     private final int port;
     private final String name;
     private static Node instance=null;
     private boolean superNode;
-    private final Communicator com;
+    //private final Sender com;
     
-    public static Node getInstance(String ip,int port, String name, String bsIp, int bsPort){
+    public static Node getInstance(String ip,int port, String name){
         if(instance==null){
-            instance = new Node(ip,port,name,bsIp,bsPort);
+            instance = new Node(ip,port,name);
         }
         return instance;
     }
     
-    private Node(String ip,int port,String name,String bsIp, int bsPort){
+    private Node(String ip,int port,String name){
         this.ip=ip;
         this.port=port; 
         this.name=name;
-        com = new Communicator(bsIp, bsPort);
     }
     
     public String getIp(){
@@ -42,11 +44,11 @@ public class Node extends Thread{
     /*
         Register node in super node
     */
-    private void register(){
+    public RegisterResponse register(){
         
         String message=(new Message(MessageType.REG,ip,port,name)).getMessage();
 
-        String response = com.sendTCPMessage(message);
+        String response = Sender.getInstance().sendTCPMessage(message);
         
         System.out.println("Response:"+response);
         String[] splitted = response.split(" ");
@@ -59,22 +61,28 @@ public class Node extends Thread{
 
         switch(noOfNodes.trim()){
             case "0":superNode=true;
-                    break;
+                    return new RegisterResponse(MessageType.REG_SUCCESS, null, null);
+                   // break;
             case "1":superNode=true;
                     peerIps = new String[1];
                     peerPorts = new int[1];
                     peerIps[0]=splitted[3];
                     peerPorts[0]=Integer.parseInt(splitted[4]);
-                    System.out.println(joinNetwork(peerIps[0], peerPorts[0]));
-                    break;
+                  //  System.out.println(joinNetwork(peerIps[0], peerPorts[0]));
+                    return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
+                  //  break;
             case "9996":System.out.println("Failed, can’t register. BS full.");
-                        break;
+                    return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                   //     break;
             case "9997":System.out.println("Failed, registered to another user, try a different IP and port");
-                        break;
+                    return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                      //  break;
             case "9998":System.out.println("Failed, already registered to you, unregister first");
-                        break;
+                return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                       // break;
             case "9999":System.out.println("Failed, there is some error in the command");
-                        break;
+                return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                      //  break;
                     
             default:if(isSuper()){
                         superNode=true;
@@ -88,10 +96,11 @@ public class Node extends Thread{
                         peerPorts[i-1]=Integer.parseInt(splitted[3*i+1]);
                         System.out.println(peerIps[i-1]+","+peerPorts[i-1]);
                     } 
-                    for(int i=0;i<2;i++){
+                   /* for(int i=0;i<2;i++){
                         int[] array= getRandomTwo(number);
                         System.out.println(joinNetwork(peerIps[array[i]], peerPorts[array[i]]));
-                    }
+                    }*/
+                    return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
                 
         }
     }
@@ -99,13 +108,13 @@ public class Node extends Thread{
     private void unregister(){
         String message =(new Message(MessageType.UNREG,ip,port,name)).getMessage();
 
-        com.sendTCPMessage(message);
+        Sender.getInstance().sendTCPMessage(message);
     }
     
     private String joinNetwork( String peerIp, int peerPort){
         String message=(new Message(MessageType.JOIN,ip,port,name)).getMessage();
         
-        String response = com.sendUDPMessage(message, peerIp, peerPort);
+        String response = Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
         
         return response;
     }
@@ -131,13 +140,27 @@ public class Node extends Thread{
         
     }    
 
-    
     @Override
-    public void run(){
-       register();   
-
-      //unregister();
+    public void update(Observable o, Object arg) {
+        String incoming = (String)arg;
+        
+        //Process incoming message
     }
+    
+    public void start(){
+        
+        RegisterResponse response = register(); 
+        
+        if(response.isSucess()){
+            Thread reciever= new Thread(Reciever.getInstance());
+            reciever.start();
+            
+            //now join the network
+        }
+    }
+
+    
+
     
 
 }
