@@ -11,7 +11,11 @@ package dsphase2;
 public class Message {
     private String message;
     
-    public Message(MessageType type, String ip, int port, String name){
+    public Message(MessageType type, String ip, int port, String name,boolean isSuper,int success){
+        char para = 'F';
+        if(isSuper){
+            para = 'T'; 
+        }
         switch(type){
             case REG:message = appendLength("REG"+" "+ip+" "+port+" "+name);
                 break;
@@ -19,6 +23,12 @@ public class Message {
                 break;
             case JOIN:message=appendLength("JOIN"+" "+ip+" "+port);
                 break;
+            case JOINOK: appendLength("JOINOK"+" "+success);
+                break; 
+            case INQUIRE: message= appendLength("INQUIRE"+" "+ip+" "+port+" "+para);
+                break; 
+            case INQUIREOK: message= appendLength("INQUIREOK"+" "+ip+" "+port);
+                break; 
         }
     }
     
