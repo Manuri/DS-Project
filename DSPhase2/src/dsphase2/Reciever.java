@@ -45,11 +45,15 @@ public class Reciever extends Observable implements Runnable{
             DatagramPacket dgp = new DatagramPacket(incomingData, incomingData.length);
             
             try {
+                System.out.println("Listening on port:" +Config.MY_PORT);
                 socket.receive(dgp);
                 if(incomingData.length>0){
-                
-                String recievedString = new String(dgp.getData());                
+                String recievedString = new String(dgp.getData());
+                    
+                System.out.println("Datagram received, received message: "+ recievedString);
+                    setChanged();
                     notifyObservers(recievedString);
+                    clearChanged();
                 }
                 
                 

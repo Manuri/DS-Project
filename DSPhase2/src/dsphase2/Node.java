@@ -4,6 +4,7 @@
 
 package dsphase2;
 
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -31,6 +32,10 @@ public class Node implements Observer{
         this.ip=ip;
         this.port=port; 
         this.name=name;
+        myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
+        myFiles.put("Harry",new String[]{"Harry Potter"});
+        myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
+    
     }
     
     public String getIp(){
@@ -140,26 +145,57 @@ public class Node implements Observer{
         
     }    
 
+    //To be changed
+    HashMap<String,String[]> myFiles = new HashMap<String, String[]>();
+    
+    
     @Override
     public void update(Observable o, Object arg) {
         String incoming = (String)arg;
-        
+        if (isSuper()){
+            String[] messageComponents = incoming.split("\"");
+            String fileName = messageComponents[1];
+            
+            
+            //check if I have the file
+            
+            //check if the file is there in the childrenset including myself
+            
+        }
+        //System.out.println(incoming);
         //Process incoming message
     }
     
     public void start(){
         
-        RegisterResponse response = register(); 
+        //RegisterResponse response = register(); 
         
-        if(response.isSucess()){
+        //if(response.isSucess()){
             Thread reciever= new Thread(Reciever.getInstance());
             reciever.start();
             
             //now join the network
-        }
+        //}
     }
 
+    public void search(String fileName){
+        String peerIp = "127.0.0.1";
+        int peerPort = 5001;
+        String fileNameString = "\""+fileName+"\"";
+        String message = (new Message(MessageType.SER, peerIp, peerPort, fileNameString)).getMessage();
+        String response = Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+                System.out.println("Returned from node:"+ response);
+        //return response;
+    }
     
+    public void search(String fileName, int maxHops){
+        String peerIp = "127.0.0.1";
+        int peerPort = 5001;
+        String message = (new Message(MessageType.SER, "127.0.0.1", 5001, fileName, maxHops)).getMessage();
+        String response = Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        System.out.println("Returned from node:"+ response);
+        //return response;
+    }
 
     
 

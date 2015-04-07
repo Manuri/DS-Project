@@ -19,7 +19,17 @@ public class Message {
                 break;
             case JOIN:message=appendLength("JOIN"+" "+ip+" "+port);
                 break;
+            case SER:
+            {
+                String fileName = name;
+                message=appendLength("SER"+" "+ip+" "+port+" "+fileName);
+                break;
+            }
         }
+    }
+    
+    public Message(MessageType type, String ip, int port, String fileNanme, int maxHops){
+        message=appendLength("SER"+" "+ip+" "+port+" "+fileNanme+" "+maxHops);
     }
     
     public String getMessage(){
