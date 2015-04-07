@@ -12,6 +12,7 @@ public class Message {
     private String message;
     
     public Message(MessageType type, String ip, int port, String name){
+
         switch(type){
             case REG:message = appendLength("REG"+" "+ip+" "+port+" "+name);
                 break;
@@ -25,6 +26,17 @@ public class Message {
                 message=appendLength("SER"+" "+ip+" "+port+" "+fileName);
                 break;
             }
+            case INQUIRE: message= appendLength("INQUIRE"+" "+ip+" "+port);
+                break; 
+            case INQUIREOK: message= appendLength("INQUIREOK"+" "+ip+" "+port);
+                break;
+        }
+    }
+    
+    public Message(MessageType type, int success){
+        switch(type){
+            case JOINOK: message=appendLength("JOINOK"+" "+success);
+                break;
         }
     }
     

@@ -9,5 +9,5 @@ package dsphase2;
  * @author Amaya
  */
 public enum MessageType {
-     REG, UNREG, JOIN, LEAVE,SER, REG_SUCCESS, REG_FAILURE
+     REG, UNREG, JOIN, JOINOK,INQUIRE,INQUIREOK, LEAVE,SER, REG_SUCCESS, REG_FAILURE
 }
