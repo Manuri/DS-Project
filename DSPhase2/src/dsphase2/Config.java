@@ -16,7 +16,7 @@ public class Config {
     static final String MY_IP = "127.0.0.1";
     static final int MY_PORT = 5001;
     static final String MY_NAME = "Devni";
-    
+    static final boolean isSuper = true;
     
     //When configured as peer
 //    static final String MY_IP = "127.0.0.2";
