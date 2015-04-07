@@ -130,6 +130,11 @@ public class Node implements Observer {
         String message = (new Message(msgType, ip, port, name)).getMessage();
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
     }
+    
+    private void sendMessage(String message, String peerIp, int peerPort){
+        System.out.println("sending message: "+message+" from:"+Config.MY_IP+":"+Config.MY_PORT+" to:"+peerIp+":"+peerPort);
+        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+    }
 
     private boolean isSuper() {
         if (Math.random() >= 0.5) {
@@ -164,8 +169,16 @@ public class Node implements Observer {
         String incoming = (String) arg;
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
-        String peerIp = msg[2];
-        int peerPort = Integer.parseInt(msg[3]);
+        String peerIp;
+        int peerPort;
+        if (msgType==MessageType.SEROK){
+            peerIp = msg[3];
+            peerPort = Integer.parseInt(msg[4]);
+        }
+        else{
+            peerIp = msg[2];
+            peerPort = Integer.parseInt(msg[3]);
+        }
         switch (msgType) {
             // for inquire msg : <length INQUIRE IP_address port_no is_super>
             case INQUIRE:
@@ -198,16 +211,44 @@ public class Node implements Observer {
                 break;
             case SER:
                 incoming = (String)arg;
-                if (isSuper()){
+                //if (isSuper()){
                     String[] messageComponents = incoming.split("\"");
-                    String fileName = messageComponents[1];
-            
-            
-            //check if I have the file
-            
+                    String fileKey = messageComponents[1];
+                    
+                    System.out.println("Search message received for key:"+fileKey);
+                    //check if I have the file
+                    if (myFiles.containsKey(fileKey)){
+                        String[] files = myFiles.get(fileKey);
+                        int noOfFiles = files.length;
+                        String response = (new Message(MessageType.SEROK,noOfFiles,Config.MY_IP,Config.MY_PORT,0,files)).getMessage();
+                        System.out.println("Created response:"+response);
+                        sendMessage(response, peerIp, peerPort);
+                    }
             //check if the file is there in the childrenset including myself
             
+                //}
+                break;
+            case SEROK:
+                incoming = (String)arg;
+                String[] parts = incoming.split(" ");
+                int noOfFiles = Integer.parseInt(parts[2]);
+                switch(noOfFiles) {
+                    case 0:
+                        System.out.println("Files not found!");
+                        break;
+                    case 1:
+                        System.out.println("Files found:");
+                        System.out.println(incoming);
+                        break;
+                    case 9999:
+                        System.out.println("Node unreachable");
+                        break;
+                    case 9998:
+                        System.out.println("Unknown error occured...");
+                        break;
+                       
                 }
+            break;
         }
 
     }
@@ -223,29 +264,29 @@ public class Node implements Observer {
             //now join the network
             String[] peerIPs = response.getPeerIps();
             int[] peerPorts = response.getpeerPorts();
-
-            if (isSuper()) {
-                //get random 2 peers to connect and check for super peer
-                int[] arr = getRandomTwo(peerIPs.length);
-                inquireResponses = 2;
-                for (int peer : arr) {
+            if (peerIPs!=null){
+                if (isSuper()) {
+                    //get random 2 peers to connect and check for super peer
+                    int[] arr = getRandomTwo(peerIPs.length);
+                    inquireResponses = 2;
+                    for (int peer : arr) {
+                        sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
+                    }
+                } else {
+                    // get a peer to connect and check for super peer
+                    int peer = getRandomNo(peerIPs.length);
+                    inquireResponses = 1;
                     sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
                 }
-            } else {
-                // get a peer to connect and check for super peer
-                int peer = getRandomNo(peerIPs.length);
-                inquireResponses = 1;
-                sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
             }
-
 //            // wait until all responses are received for INQUIRE message
 //            while (inquireResponses != 0) {
 //                continue;
 //            }
 //            
-            while(true){
-                continue;
-            }
+//            while(true){
+//                continue;
+//            }
         }
     }
 
@@ -254,9 +295,7 @@ public class Node implements Observer {
         int peerPort = 5001;
         String fileNameString = "\""+fileName+"\"";
         String message = (new Message(MessageType.SER, peerIp, peerPort, fileNameString)).getMessage();
-        String response = Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
-                System.out.println("Returned from node:"+ response);
-        //return response;
+        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
     }
     
     public void search(String fileName, int maxHops){
@@ -264,8 +303,7 @@ public class Node implements Observer {
         int peerPort = 5001;
         String message = (new Message(MessageType.SER, "127.0.0.1", 5001, fileName, maxHops)).getMessage();
         String response = Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
-        System.out.println("Returned from node:"+ response);
-        //return response;
+
     }
     
     

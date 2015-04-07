@@ -44,6 +44,21 @@ public class Message {
         message=appendLength("SER"+" "+ip+" "+port+" "+fileNanme+" "+maxHops);
     }
     
+    public Message(MessageType type, int noOfFiles, String ip, int port, int hops, String[] files){
+        switch(type){
+        
+            case SEROK: 
+            {
+                String filesString="";
+                for (String file : files) {
+                    filesString = filesString +" "+ file;
+                }
+                message=appendLength("SEROK"+" "+noOfFiles+" "+ip+" "+port+" "+hops+" "+filesString.substring(1));
+                break;
+        
+            }
+        }
+    }
     public String getMessage(){
         return message;
     }
