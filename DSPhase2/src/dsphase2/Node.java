@@ -65,7 +65,7 @@ public class Node implements Observer {
     }
 
     /*
-     Register node in super node
+    Register node in super node
      */
     public RegisterResponse register() {
 
@@ -157,6 +157,10 @@ public class Node implements Observer {
     }
 
     private int[] getRandomTwo(int number) {
+
+        if (number == 2) {
+            return new int[]{0, 1};
+        }
         int rand1 = (int) (Math.random() * 1000 % number);
         int rand2 = (int) (Math.random() * 1000 % (number));
 
@@ -170,7 +174,6 @@ public class Node implements Observer {
     private int getRandomNo(int number) {
         return (int) (Math.random() * 1000 % number);
     }
-
     //To be changed
     HashMap<String, String[]> myFiles = new HashMap<String, String[]>();
     //Store the files children have in key,peers format
@@ -194,6 +197,7 @@ public class Node implements Observer {
         switch (msgType) {
             // for inquire msg : <length INQUIRE IP_address port_no is_super>
             case INQUIRE:
+                System.out.println("Received INQUIRE message");
                 if (isSuper()) {
                     sendMessage(MessageType.INQUIREOK, ip, port);
                 } else {
@@ -294,20 +298,42 @@ public class Node implements Observer {
 
             //now join the network
             String[] peerIPs = response.getPeerIps();
+            System.out.println("Peer IPs");
+            for (String i : peerIPs) {
+                System.out.println(i);
+            }
             int[] peerPorts = response.getpeerPorts();
             if (peerIPs != null) {
                 if (isSuper()) {
-                    //get random 2 peers to connect and check for super peer
-                    int[] arr = getRandomTwo(peerIPs.length);
-                    inquireResponses = 2;
-                    for (int peer : arr) {
-                        sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
+                    System.out.println("I am Super");
+                    int[] arr;
+                    if (peerIPs.length >= 2) {
+                        //get random 2 peers to connect and check for super peer
+                        arr = getRandomTwo(peerIPs.length);
+                        inquireResponses = 2;
+                        for (int peer : arr) {
+                            System.out.println("random peer: " + peerIPs[peer]);
+                            sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
+                        }
+                    } else {
+                        if (peerIPs.length == 1) {
+                            sendMessage(MessageType.INQUIRE, peerIPs[0], peerPorts[0]);
+                        }
                     }
                 } else {
+                    System.out.println("I am Normal");
                     // get a peer to connect and check for super peer
-                    int peer = getRandomNo(peerIPs.length);
-                    inquireResponses = 1;
-                    sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
+                    if (peerIPs.length > 0) {
+                        int peer;
+                        if (peerIPs.length == 1) {
+                            peer = 0;
+                        } else {
+                            peer = getRandomNo(peerIPs.length);
+                        }
+                        inquireResponses = 1;
+                        System.out.println("random peer: " + peerIPs[peer]);
+                        sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
+                    }
                 }
             }
 //            // wait until all responses are received for INQUIRE message
@@ -349,5 +375,4 @@ public class Node implements Observer {
     public void search(String fileName, String peerIp, int peerPort) {
         search(fileName, Config.MY_IP, Config.MY_PORT, peerIp, peerPort);
     }
-
 }

@@ -43,3 +43,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /DSPhase2/build/
+/DSPhase2/dist/
+/DSPhase2/nbproject/private/
