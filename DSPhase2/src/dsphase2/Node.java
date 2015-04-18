@@ -40,7 +40,7 @@ public class Node implements Observer {
         this.name = name;
         superNode = Config.isSuper;
         addMyFiles();
-        if (isSuper()) {
+        if (superNode) {
             addChidrensFiles();
         }
     }
@@ -65,7 +65,7 @@ public class Node implements Observer {
     }
 
     /*
-    Register node in super node
+     Register node in super node
      */
     public RegisterResponse register() {
 
@@ -183,6 +183,7 @@ public class Node implements Observer {
     public void update(Observable o, Object arg) {
         //Process incoming message
         String incoming = (String) arg;
+        System.out.println("incoming message:"+incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
         String peerIp;
@@ -192,13 +193,15 @@ public class Node implements Observer {
             peerPort = Integer.parseInt(msg[4]);
         } else {
             peerIp = msg[2];
-            peerPort = Integer.parseInt(msg[3]);
+            System.out.println("Peer port: "+msg[3]);
+            peerPort = Integer.parseInt(msg[3].trim());
+            
         }
         switch (msgType) {
             // for inquire msg : <length INQUIRE IP_address port_no is_super>
             case INQUIRE:
                 System.out.println("Received INQUIRE message");
-                if (isSuper()) {
+                if (superNode) {
                     sendMessage(MessageType.INQUIREOK, ip, port);
                 } else {
                     String[] superNodeInfo = supernode.split(":");
@@ -210,7 +213,7 @@ public class Node implements Observer {
                 inquireResponses--;
                 sendMessage(MessageType.JOIN, peerIp, peerPort);
                 String info = peerIp + ":" + peerPort;
-                if (isSuper()) {
+                if (superNode) {
                     String superPeer = info;
                     superPeers.add(superPeer);
                 } else {
@@ -246,7 +249,7 @@ public class Node implements Observer {
                     System.out.println("Created response:" + response);
                     sendMessage(response, searcherIp, searcherPort);
                 }
-                if (isSuper()) {
+                if (superNode) {
                     //check if my children have the file
                     if (chilrensFiles.containsKey(fileKey)) {
                         String[] peersWithFile = chilrensFiles.get(fileKey);
@@ -299,8 +302,10 @@ public class Node implements Observer {
             //now join the network
             String[] peerIPs = response.getPeerIps();
             System.out.println("Peer IPs");
-            for (String i : peerIPs) {
-                System.out.println(i);
+            if (peerIPs!=null) {               
+                for (String i : peerIPs) {
+                    System.out.println(i);
+                }
             }
             int[] peerPorts = response.getpeerPorts();
             if (peerIPs != null) {

@@ -23,6 +23,7 @@ public class Reciever extends Observable implements Runnable{
     private Reciever() {
         try{
             socket = new DatagramSocket(Config.MY_PORT);
+            System.out.println("Socket:" +socket);
         }catch(SocketException e){
         }
     }
@@ -46,7 +47,11 @@ public class Reciever extends Observable implements Runnable{
             
             try {
                 System.out.println("Listening on port:" +Config.MY_PORT);
+                try{
                 socket.receive(dgp);
+                }catch(NullPointerException e){
+                    System.out.println("NUll pointer exception");
+                }
                 if(incomingData.length>0){
                 String recievedString = new String(dgp.getData());
                     
