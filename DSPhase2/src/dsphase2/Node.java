@@ -33,27 +33,27 @@ public class Node implements Observer {
         }
         return instance;
     }
-    
-    private Node(String ip,int port,String name){
-        this.ip=ip;
-        this.port=port; 
-        this.name=name;
+
+    private Node(String ip, int port, String name) {
+        this.ip = ip;
+        this.port = port;
+        this.name = name;
         superNode = Config.isSuper;
         addMyFiles();
-        if(isSuper()){
+        if (isSuper()) {
             addChidrensFiles();
         }
     }
-    
-    private void addMyFiles(){
-        myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
-        myFiles.put("Harry",new String[]{"Harry Potter"});
-        myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
+
+    private void addMyFiles() {
+        //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
+        myFiles.put("Harry", new String[]{"Harry Potter"});
+        //myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
     }
-    
-    private void addChidrensFiles(){
+
+    private void addChidrensFiles() {
         chilrensFiles.put("Adventures", new String[]{"127.0.0.1:5001"});
-        chilrensFiles.put("Windows", new String[]{"127.0.0.1:5001","127.0.0.3:5001"});
+        chilrensFiles.put("Windows", new String[]{"127.0.0.1:5001", "127.0.0.3:5001"});
     }
 
     public String getIp() {
@@ -65,7 +65,7 @@ public class Node implements Observer {
     }
 
     /*
-    Register node in super node
+     Register node in super node
      */
     public RegisterResponse register() {
 
@@ -142,9 +142,9 @@ public class Node implements Observer {
         String message = (new Message(msgType, ip, port, name)).getMessage();
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
     }
-    
-    private void sendMessage(String message, String peerIp, int peerPort){
-        System.out.println("sending message: "+message+" from:"+Config.MY_IP+":"+Config.MY_PORT+" to:"+peerIp+":"+peerPort);
+
+    private void sendMessage(String message, String peerIp, int peerPort) {
+        System.out.println("sending message: " + message + " from:" + Config.MY_IP + ":" + Config.MY_PORT + " to:" + peerIp + ":" + peerPort);
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
     }
 
@@ -172,10 +172,10 @@ public class Node implements Observer {
     }
 
     //To be changed
-    HashMap<String,String[]> myFiles = new HashMap<String, String[]>();
+    HashMap<String, String[]> myFiles = new HashMap<String, String[]>();
     //Store the files children have in key,peers format
-    HashMap<String,String[]> chilrensFiles = new HashMap<String,String[]>();
-    
+    HashMap<String, String[]> chilrensFiles = new HashMap<String, String[]>();
+
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
@@ -184,11 +184,10 @@ public class Node implements Observer {
         MessageType msgType = MessageType.valueOf(msg[1]);
         String peerIp;
         int peerPort;
-        if (msgType==MessageType.SEROK){
+        if (msgType == MessageType.SEROK) {
             peerIp = msg[3];
             peerPort = Integer.parseInt(msg[4]);
-        }
-        else{
+        } else {
             peerIp = msg[2];
             peerPort = Integer.parseInt(msg[3]);
         }
@@ -223,41 +222,48 @@ public class Node implements Observer {
             case JOINOK:
                 break;
             case SER:
-                incoming = (String)arg;
-                //if (isSuper()){
-                    String[] messageComponents = incoming.split("\"");
-                    String[] searcherIpPort = messageComponents[0].split(" ");
-                    String searcherIp = searcherIpPort[2];
-                    int searcherPort = Integer.parseInt(searcherIpPort[3]); 
-                    String fileKey = messageComponents[1];
-                    int hopCount = 1;
-                    if(messageComponents.length>2){
-                        hopCount = 1 + Integer.parseInt(messageComponents[2].substring(1));
-                    }
-                    System.out.println("Search message received for key:"+fileKey);
-                    //check if I have the file
-                    if (myFiles.containsKey(fileKey)){
-                        String[] files = myFiles.get(fileKey);
-                        int noOfFiles = files.length;
-                        String response = (new Message(MessageType.SEROK,noOfFiles,Config.MY_IP,Config.MY_PORT,hopCount,files)).getMessage();
-                        System.out.println("Created response:"+response);
-                        sendMessage(response, searcherIp, searcherPort);
-                    }
-                    //else, check if my children have the file
-                    else if(chilrensFiles.containsKey(fileKey)){
+                incoming = (String) arg;
+
+                String[] messageComponents = incoming.split("\"");
+                String[] searcherIpPort = messageComponents[0].split(" ");
+                String searcherIp = searcherIpPort[2];
+                int searcherPort = Integer.parseInt(searcherIpPort[3]);
+                String fileKey = messageComponents[1];
+                int hopCount = 1;
+                if ("\"".equals(messageComponents[2])) {
+                    hopCount = 1 + Integer.parseInt(messageComponents[2].substring(1));
+                }
+                System.out.println("Search message received for key:" + fileKey);
+                //check if I have the file
+                if (myFiles.containsKey(fileKey)) {
+                    String[] files = myFiles.get(fileKey);
+                    int noOfFiles = files.length;
+                    String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();
+                    System.out.println("Created response:" + response);
+                    sendMessage(response, searcherIp, searcherPort);
+                }
+                if (isSuper()) {
+                    //check if my children have the file
+                    if (chilrensFiles.containsKey(fileKey)) {
                         String[] peersWithFile = chilrensFiles.get(fileKey);
-                        for(String peer : peersWithFile){
+                        for (String peer : peersWithFile) {
                             String[] ipPort = peer.split(":");
-                            search(fileKey,searcherIp, searcherPort, ipPort[0],Integer.parseInt(ipPort[1]),hopCount);
+                            search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+                        }
+                    } //else, search it from other connected super peers
+                    else {
+                        for (String peer : superPeers) {
+                            String[] ipPort = peer.split(":");
+                            search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                         }
                     }
-                //}
+                }
                 break;
             case SEROK:
-                incoming = (String)arg;
+                incoming = (String) arg;
                 String[] parts = incoming.split(" ");
                 int noOfFiles = Integer.parseInt(parts[2]);
-                switch(noOfFiles) {
+                switch (noOfFiles) {
                     case 0:
                         System.out.println("Files not found!");
                         break;
@@ -271,25 +277,25 @@ public class Node implements Observer {
                     case 9998:
                         System.out.println("Unknown error occured...");
                         break;
-                       
+
                 }
-            break;
+                break;
         }
 
     }
-    
-    public void start(){
-    
+
+    public void start() {
+
         RegisterResponse response = register();
 
         if (response.isSucess()) {
             Thread reciever = new Thread(Reciever.getInstance());
-        reciever.start();
+            reciever.start();
 
             //now join the network
             String[] peerIPs = response.getPeerIps();
             int[] peerPorts = response.getpeerPorts();
-            if (peerIPs!=null){
+            if (peerIPs != null) {
                 if (isSuper()) {
                     //get random 2 peers to connect and check for super peer
                     int[] arr = getRandomTwo(peerIPs.length);
@@ -315,30 +321,33 @@ public class Node implements Observer {
         }
     }
 
-    public void search(String fileName){
-        search(fileName, "127.0.0.1", 5001);
+    public void search(String fileName) {
+        String[] ipPort = supernode.split(":");
+        search(fileName, ipPort[0], Integer.parseInt(ipPort[1]));
     }
-    
-    public void search(String fileName, String peerIp, int peerPort, int hopCount){
-        search(fileName,Config.MY_IP,Config.MY_PORT,peerIp,peerPort,hopCount);
+
+    public void search(String fileName, String peerIp, int peerPort, int hopCount) {
+        search(fileName, Config.MY_IP, Config.MY_PORT, peerIp, peerPort, hopCount);
     }
-    
-    public void search(String fileName, String searcherIp, int searcherPort, String peerIp, int peerPort, int hopCount){
-        String fileNameString = "\""+fileName+"\"";
+
+    public void search(String fileName, String searcherIp, int searcherPort, String peerIp, int peerPort, int hopCount) {
+        String fileNameString = "\"" + fileName + "\"";
         String message = (new Message(MessageType.SER, searcherIp, searcherPort, fileNameString, hopCount)).getMessage();
+        System.out.println("created message" + message);
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        System.out.println("Message sent:" + message);
     }
-    
-    public void search(String fileName, String searcherIp, int searcherPort, String peerIp, int peerPort){
-        String fileNameString = "\""+fileName+"\"";
+
+    public void search(String fileName, String searcherIp, int searcherPort, String peerIp, int peerPort) {
+        String fileNameString = "\"" + fileName + "\"";
         String message = (new Message(MessageType.SER, searcherIp, searcherPort, fileNameString)).getMessage();
+        System.out.println("created message" + message);
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        System.out.println("Message Sent:" + message);
     }
-    
-    public void search(String fileName, String peerIp, int peerPort){
+
+    public void search(String fileName, String peerIp, int peerPort) {
         search(fileName, Config.MY_IP, Config.MY_PORT, peerIp, peerPort);
     }
-    
-    
-    
+
 }
