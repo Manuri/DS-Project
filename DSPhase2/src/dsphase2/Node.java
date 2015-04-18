@@ -309,7 +309,7 @@ public class Node implements Observer {
             }
             int[] peerPorts = response.getpeerPorts();
             if (peerIPs != null) {
-                if (isSuper()) {
+                if (superNode) {
                     System.out.println("I am Super");
                     int[] arr;
                     if (peerIPs.length >= 2) {
