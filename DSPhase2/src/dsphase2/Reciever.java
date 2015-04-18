@@ -42,7 +42,7 @@ public class Reciever extends Observable implements Runnable{
     public void run(){
         this.addObserver(Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME));
         while(true){
-            byte[] incomingData = new byte[500];
+            byte[] incomingData = new byte[50000];
             DatagramPacket dgp = new DatagramPacket(incomingData, incomingData.length);
             
             try {

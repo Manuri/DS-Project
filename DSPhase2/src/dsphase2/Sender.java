@@ -72,7 +72,7 @@ public class Sender {
           
             outToServer.println(sentence);   
 
-           buf=new char[1000];
+           buf=new char[10000];
 
             inFromServer.read(buf);
             System.out.println(buf); 

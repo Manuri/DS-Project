@@ -186,12 +186,13 @@ public class Node implements Observer {
         System.out.println("incoming message:"+incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
-        String peerIp;
-        int peerPort;
+        String peerIp = null;
+        int peerPort = 0;
         if (msgType == MessageType.SEROK) {
             peerIp = msg[3];
             peerPort = Integer.parseInt(msg[4]);
-        } else {
+        } else if(msgType == MessageType.JOINOK){}
+        else {
             peerIp = msg[2];
             System.out.println("Peer port: "+msg[3]);
             peerPort = Integer.parseInt(msg[3].trim());

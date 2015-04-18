@@ -20,6 +20,8 @@ public class Message {
                 break;
             case JOIN:message=appendLength("JOIN"+" "+ip+" "+port);
                 break;
+            case JOINOK: message=appendLength("JOINOK"+" "+0);
+                break;
             case SER:
             {
                 String fileName = name;
@@ -30,6 +32,7 @@ public class Message {
                 break; 
             case INQUIREOK: message= appendLength("INQUIREOK"+" "+ip+" "+port);
                 break;
+           
         }
     }
     
