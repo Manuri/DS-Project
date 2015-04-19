@@ -1,0 +1,12 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   DSPhase2/src/dsphase2/Config.java
+#	modified:   DSPhase2/src/dsphase2/Node.java
+#	modified:   DSPhase2/src/dsphase2/Reciever.java
+#
+

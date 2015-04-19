@@ -23,7 +23,7 @@ public class Node extends Observable implements Observer {
     private String supernode;  // supernode = "peer_IP:port_no"
     //only available if this is a super node
     private ArrayList<String> superPeers = new ArrayList<>();
-    private ArrayList<String> clusterNodes = new ArrayList<>();
+    private ArrayList<String> childNodes = new ArrayList<>();
     private int inquireResponses;
     //private final Sender com;
 
@@ -229,7 +229,7 @@ public class Node extends Observable implements Observer {
                 break;
             // for join req : <length JOIN IP_address port_no>
             case JOIN:
-                clusterNodes.add(peerIp + ":" + peerPort);
+                childNodes.add(peerIp + ":" + peerPort);
                 sendMessage(MessageType.JOINOK, ip, port);
                 break;
             //for join resp length JOINOK value
