@@ -194,7 +194,7 @@ public class Node extends Observable implements Observer {
         MessageType msgType = MessageType.valueOf(msg[1]);
         String peerIp = null;
         int peerPort = 0;
-        if (msgType == MessageType.SEROK) {
+       /* if (msgType == MessageType.SEROK) {
             peerIp = msg[3];
             peerPort = Integer.parseInt(msg[4]);
         } else if(msgType == MessageType.JOINOK){}
@@ -203,7 +203,25 @@ public class Node extends Observable implements Observer {
             System.out.println("Peer port: "+msg[3]);
             peerPort = Integer.parseInt(msg[3].trim());
             
+        }*/
+        switch(msgType){
+            case SEROK:            
+                peerIp = msg[3].trim();
+                peerPort = Integer.parseInt(msg[4].trim());
+                break;
+                
+            case LEAVE:
+                
+                
+            case LEAVEOK:
+                break;
+                
+            default: 
+                peerIp = msg[2].trim();
+                System.out.println("Peer port: "+msg[3]);
+                peerPort = Integer.parseInt(msg[3].trim());                
         }
+        
         switch (msgType) {
             // for inquire msg : <length INQUIRE IP_address port_no is_super>
             case INQUIRE:
@@ -294,6 +312,8 @@ public class Node extends Observable implements Observer {
 
                 }
                 break;
+            case LEAVE:
+                incoming = (String) arg;
         }
 
     }
@@ -394,6 +414,25 @@ public class Node extends Observable implements Observer {
         setChanged();
         notifyObservers(msg);
         clearChanged();
+    }
+    
+    public void leave(){
+        String[] ipPort;
+        if(superNode){
+            for(String peer : superPeers){
+                ipPort= peer.split(":");
+                sendMessage(MessageType.LEAVE,ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));
+            }
+            
+            for(String child: childNodes){
+                ipPort= child.split(":");
+                sendMessage(MessageType.LEAVE,ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));                
+            }
+        }
+        else{
+            ipPort=supernode.split(":");
+            sendMessage(MessageType.LEAVE, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+        }
     }
         
 }
