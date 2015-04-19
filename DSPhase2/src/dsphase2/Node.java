@@ -23,7 +23,7 @@ public class Node implements Observer {
     private String supernode;  // supernode = "peer_IP:port_no"
     //only available if this is a super node
     private ArrayList<String> superPeers = new ArrayList<>();
-    private ArrayList<String> childNodes = new ArrayList<>();
+    private ArrayList<String> clusterNodes = new ArrayList<>();
     private int inquireResponses;
     //private final Sender com;
 
@@ -149,12 +149,11 @@ public class Node implements Observer {
     }
 
     private boolean isSuper() {
-      /*  if (Math.random() >= 0.5) {
+        if (Math.random() >= 0.5) {
             return true;
         } else {
             return false;
-        }*/
-        return true;
+        }
     }
 
     private int[] getRandomTwo(int number) {
@@ -224,7 +223,7 @@ public class Node implements Observer {
                 break;
             // for join req : <length JOIN IP_address port_no>
             case JOIN:
-                childNodes.add(peerIp + ":" + peerPort);
+                clusterNodes.add(peerIp + ":" + peerPort);
                 sendMessage(MessageType.JOINOK, ip, port);
                 break;
             //for join resp length JOINOK value
