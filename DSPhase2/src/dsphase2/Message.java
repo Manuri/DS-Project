@@ -4,6 +4,8 @@
 
 package dsphase2;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Amaya
@@ -47,7 +49,7 @@ public class Message {
         message=appendLength("SER"+" "+ip+" "+port+" "+fileNanme+" "+maxHops);
     }
     
-    public Message(MessageType type, int noOfFiles, String ip, int port, int hops, String[] files){
+    public Message(MessageType type, int noOfFiles, String ip, int port, int hops, ArrayList<String> files){
         switch(type){
         
             case SEROK: 

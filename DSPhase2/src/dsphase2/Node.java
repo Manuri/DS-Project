@@ -3,10 +3,17 @@
  */
 package dsphase2;
 
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -47,9 +54,45 @@ public class Node extends Observable implements Observer {
     }
 
     private void addMyFiles() {
-        //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
-        myFiles.put("Harry", new String[]{"Harry Potter"});
-        //myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
+        
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(new File("resources/FileNames.txt")));
+            String readLine = null;
+            int lineNumber = 0;
+            String[] ipComponents = ip.split("\\.");
+            int ipRemainder = Integer.parseInt(ipComponents[3]) % 3;
+            while((readLine = reader.readLine()) != null){
+                if (lineNumber % 3 == ipRemainder){
+                    String[] terms = readLine.split(" ");
+                    for (String term : terms){
+                        if (myFiles.containsKey(term)){
+                            (myFiles.get(term)).add(readLine.toLowerCase());
+                        }
+                        else{
+                            ArrayList<String> files = new ArrayList<String>();
+                            files.add(readLine.toLowerCase());
+                            myFiles.put(term,files);
+                        }
+                    }
+                }
+                lineNumber ++;
+            //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
+            //myFiles.put("Harry", new String[]{"Harry Potter"});
+            
+            }
+            //myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void addChidrensFiles() {
@@ -180,8 +223,10 @@ public class Node extends Observable implements Observer {
     private int getRandomNo(int number) {
         return (int) (Math.random() * 1000 % number);
     }
-    //To be changed
-    HashMap<String, String[]> myFiles = new HashMap<String, String[]>();
+    //my files
+    //stored as an invereted index
+    //format term:set of files
+    HashMap<String, ArrayList<String>> myFiles = new HashMap<String, ArrayList<String>>();
     //Store the files children have in key,peers format
     HashMap<String, String[]> chilrensFiles = new HashMap<String, String[]>();
 
@@ -250,8 +295,8 @@ public class Node extends Observable implements Observer {
                 System.out.println("Search message received for key:" + fileKey);
                 //check if I have the file
                 if (myFiles.containsKey(fileKey)) {
-                    String[] files = myFiles.get(fileKey);
-                    int noOfFiles = files.length;
+                    ArrayList<String> files = myFiles.get(fileKey);
+                    int noOfFiles = files.size();
                     String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();
                     System.out.println("Created response:" + response);
                     sendMessage(response, searcherIp, searcherPort);
