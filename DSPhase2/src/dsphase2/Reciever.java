@@ -24,6 +24,7 @@ public class Reciever extends Observable implements Runnable{
         try{
             socket = new DatagramSocket(Config.MY_PORT);
             System.out.println("Socket:" +socket);
+            this.addObserver(Config.CONFIG_WINDOW); 
         }catch(SocketException e){
         }
     }
@@ -36,6 +37,7 @@ public class Reciever extends Observable implements Runnable{
         else{
             return instance;
         }
+        
     }
     
     @Override
