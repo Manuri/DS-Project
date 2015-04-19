@@ -12,7 +12,7 @@ import java.util.Observer;
  *
  * @author Amaya
  */
-public class Node implements Observer {
+public class Node extends Observable implements Observer {
 
     private final String ip;
     private final int port;
@@ -43,6 +43,7 @@ public class Node implements Observer {
         if (superNode) {
             addChidrensFiles();
         }
+        this.addObserver(Config.CONFIG_WINDOW);
     }
 
     private void addMyFiles() {
@@ -70,9 +71,9 @@ public class Node implements Observer {
     public RegisterResponse register() {
 
         String message = (new Message(MessageType.REG, ip, port, name)).getMessage();
-
+        UpdateTheLog("<Sending msg> "+message + " >> to BS"); 
         String response = Sender.getInstance().sendTCPMessage(message);
-
+        UpdateTheLog("<Received msg> "+response+" << from BS");
         System.out.println("Response:" + response);
         String[] splitted = response.split(" ");
 
@@ -98,18 +99,22 @@ public class Node implements Observer {
             //  break;
             case "9996":
                 System.out.println("Failed, can’t register. BS full.");
+                UpdateTheLog("Failed, can’t register. BS full."); 
                 return new RegisterResponse(MessageType.REG_FAILURE, null, null);
             //     break;
             case "9997":
                 System.out.println("Failed, registered to another user, try a different IP and port");
+                UpdateTheLog("Failed, registered to another user, try a different IP and port");
                 return new RegisterResponse(MessageType.REG_FAILURE, null, null);
             //  break;
             case "9998":
                 System.out.println("Failed, already registered to you, unregister first");
+                UpdateTheLog("Failed, already registered to you, unregister first");
                 return new RegisterResponse(MessageType.REG_FAILURE, null, null);
             // break;
             case "9999":
                 System.out.println("Failed, there is some error in the command");
+                UpdateTheLog("Failed, there is some error in the command");
                 return new RegisterResponse(MessageType.REG_FAILURE, null, null);
             //  break;
 
@@ -140,6 +145,7 @@ public class Node implements Observer {
 
     private void sendMessage(MessageType msgType, String peerIp, int peerPort) {
         String message = (new Message(msgType, ip, port, name)).getMessage();
+        UpdateTheLog("<Sending msg> "+message);
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
     }
 
@@ -297,6 +303,7 @@ public class Node implements Observer {
         RegisterResponse response = register();
 
         if (response.isSucess()) {
+           
             Thread reciever = new Thread(Reciever.getInstance());
             reciever.start();
 
@@ -381,4 +388,12 @@ public class Node implements Observer {
     public void search(String fileName, String peerIp, int peerPort) {
         search(fileName, Config.MY_IP, Config.MY_PORT, peerIp, peerPort);
     }
+    
+    
+    public void UpdateTheLog(String msg){
+        setChanged();
+        notifyObservers(msg);
+        clearChanged();
+    }
+        
 }
