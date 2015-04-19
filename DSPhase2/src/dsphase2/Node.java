@@ -256,6 +256,9 @@ public class Node extends Observable implements Observer {
             case LEAVEOK:
                 break;
                 
+            case JOINOK:
+                break;
+                
             default: 
                 peerIp = msg[2].trim();
                 System.out.println("Peer port: "+msg[3]);

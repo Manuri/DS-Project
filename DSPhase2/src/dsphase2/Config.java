@@ -31,7 +31,7 @@ public class Config {
     static  String MY_IP = "169.254.178.147";
     static  int MY_PORT = 5002;
     static  String MY_NAME = "Amaya";
-    static  boolean isSuper = false;
+    static  boolean isSuper = true;
     
     static  String BOOTSTRAP_IP = "169.254.178.147";
     static  int BOOTSTRAP_PORT =  9876;
