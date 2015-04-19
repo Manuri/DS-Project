@@ -57,7 +57,7 @@ public class Node extends Observable implements Observer {
         
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(new File("resources/FileNames.txt")));
+            reader = new BufferedReader(new FileReader(new File("src/resources/FileNames")));
             String readLine = null;
             int lineNumber = 0;
             String[] ipComponents = ip.split("\\.");
@@ -92,6 +92,8 @@ public class Node extends Observable implements Observer {
             } catch (IOException ex) {
                 Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
             }
+        
+            System.out.println(myFiles);
         }
     }
 
@@ -226,10 +228,14 @@ public class Node extends Observable implements Observer {
     //my files
     //stored as an invereted index
     //format term:set of files
-    HashMap<String, ArrayList<String>> myFiles = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, ArrayList<String>> myFiles = new HashMap<String, ArrayList<String>>();
     //Store the files children have in key,peers format
-    HashMap<String, String[]> chilrensFiles = new HashMap<String, String[]>();
+    private HashMap<String, String[]> chilrensFiles = new HashMap<String, String[]>();
 
+    public HashMap getMyFiles(){
+        return myFiles;
+    }
+    
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
@@ -294,7 +300,7 @@ public class Node extends Observable implements Observer {
                 }
                 System.out.println("Search message received for key:" + fileKey);
                 //check if I have the file
-                if (myFiles.containsKey(fileKey)) {
+                if (myFiles.containsKey(fileKey.toLowerCase())) {
                     ArrayList<String> files = myFiles.get(fileKey);
                     int noOfFiles = files.size();
                     String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();

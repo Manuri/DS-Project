@@ -5,13 +5,17 @@
 package dsphase2;
 
 import static dsphase2.Network.configWindow;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Observable;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -21,8 +25,8 @@ public class NodeTest {
     
     private Node node;
     public NodeTest() {
-        //Config.CONFIG_WINDOW = configWindow; 
-        //Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
+        Config.CONFIG_WINDOW = configWindow; 
+        Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
         //n1.start();
         System.out.println("I started");
     }
@@ -51,15 +55,16 @@ public class NodeTest {
      */
     @Test
     public void testGetInstance() {
-        System.out.println("getInstance");
-        String ip = "";
-        int port = 0;
-        String name = "";
-        Node expResult = null;
-        Node result = Node.getInstance(ip, port, name);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        HashMap<String,ArrayList<String>> index = node.getMyFiles();
+        Set<String> terms = index.keySet();
+        for (Iterator<String> it = terms.iterator(); it.hasNext();) {
+            String term = it.next();
+            ArrayList<String> files = index.get(term);
+            System.out.println(term);
+            for (String file : files){
+                System.out.println("\t" + file);
+            }
+        }
     }
 
     /**
