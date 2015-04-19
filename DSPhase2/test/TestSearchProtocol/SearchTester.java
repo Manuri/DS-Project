@@ -1,6 +1,7 @@
 /*
  * CS4262 Distributed Systems Mini Project
  */
+package TestSearchProtocol;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,9 +14,9 @@ import static org.junit.Assert.*;
  *
  * @author Keshani
  */
-public class NodeTest {
+public class SearchTester {
     
-    public NodeTest() {
+    public SearchTester() {
     }
     
     @BeforeClass
