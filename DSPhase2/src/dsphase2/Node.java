@@ -119,7 +119,7 @@ public class Node extends Observable implements Observer {
             //  break;
 
             default:
-                if (isSuper()) {
+                if (setSuper()) {
                     superNode = true;
                 }
                 int number = Integer.parseInt(noOfNodes);
@@ -154,7 +154,7 @@ public class Node extends Observable implements Observer {
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
     }
 
-    private boolean isSuper() {
+    private boolean setSuper() {
         if (Math.random() >= 0.5) {
             return true;
         } else {
