@@ -164,9 +164,6 @@ public class Node extends Observable implements Observer {
             //  break;
 
             default:
-                if (setSuper()) {
-                    superNode = true;
-                }
                 int number = Integer.parseInt(noOfNodes);
                 peerIps = new String[number];
                 peerPorts = new int[number];
@@ -197,14 +194,6 @@ public class Node extends Observable implements Observer {
     private void sendMessage(String message, String peerIp, int peerPort) {
         System.out.println("sending message: " + message + " from:" + Config.MY_IP + ":" + Config.MY_PORT + " to:" + peerIp + ":" + peerPort);
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
-    }
-
-    private boolean setSuper() {
-        if (Math.random() >= 0.5) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private int[] getRandomTwo(int number) {
