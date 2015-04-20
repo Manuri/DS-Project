@@ -34,7 +34,8 @@ public class Node extends Observable implements Observer {
     private int inquireResponses;
     //private final Sender com;
 
-    private HashMap<String,Integer> joinRequestSentPeers;
+    private HashMap<String, Integer> joinRequestSentPeers;
+
     public static Node getInstance(String ip, int port, String name) {
         if (instance == null) {
             instance = new Node(ip, port, name);
@@ -56,7 +57,7 @@ public class Node extends Observable implements Observer {
     }
 
     private void addMyFiles() {
-        
+
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File("src/resources/FileNames")));
@@ -64,24 +65,23 @@ public class Node extends Observable implements Observer {
             int lineNumber = 0;
             String[] ipComponents = myIp.split("\\.");
             int ipRemainder = Integer.parseInt(ipComponents[3]) % 3;
-            while((readLine = reader.readLine()) != null){
-                if (lineNumber % 3 == ipRemainder){
+            while ((readLine = reader.readLine()) != null) {
+                if (lineNumber % 3 == ipRemainder) {
                     String[] terms = readLine.split(" ");
-                    for (String term : terms){
-                        if (myFiles.containsKey(term)){
+                    for (String term : terms) {
+                        if (myFiles.containsKey(term)) {
                             (myFiles.get(term)).add(readLine.toLowerCase());
-                        }
-                        else{
+                        } else {
                             ArrayList<String> files = new ArrayList<String>();
                             files.add(readLine.toLowerCase());
-                            myFiles.put(term,files);
+                            myFiles.put(term, files);
                         }
                     }
                 }
-                lineNumber ++;
-            //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
-            //myFiles.put("Harry", new String[]{"Harry Potter"});
-            
+                lineNumber++;
+                //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
+                //myFiles.put("Harry", new String[]{"Harry Potter"});
+
             }
             //myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
         } catch (FileNotFoundException ex) {
@@ -94,7 +94,7 @@ public class Node extends Observable implements Observer {
             } catch (IOException ex) {
                 Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
             }
-        
+
             System.out.println(myFiles);
         }
     }
@@ -118,10 +118,10 @@ public class Node extends Observable implements Observer {
     public RegisterResponse register() {
 
         String message = (new Message(MessageType.REG, myIp, myPort, myName)).getMessage();
-        UpdateTheLog("<Sending msg> "+message + " >> to BS"); 
+        UpdateTheLog("<Sending msg> " + message + " >> to BS");
         String response = Sender.getInstance().sendTCPMessage(message);
-        
-        UpdateTheLog("<Received msg> "+response+" << from BS");
+
+        UpdateTheLog("<Received msg> " + response + " << from BS");
         System.out.println("Response:" + response);
         String[] splitted = response.split(" ");
 
@@ -147,7 +147,7 @@ public class Node extends Observable implements Observer {
             //  break;
             case "9996":
                 System.out.println("Failed, can’t register. BS full.");
-                UpdateTheLog("Failed, can’t register. BS full."); 
+                UpdateTheLog("Failed, can’t register. BS full.");
                 return new RegisterResponse(MessageType.REG_FAILURE, null, null);
             //     break;
             case "9997":
@@ -195,7 +195,6 @@ public class Node extends Observable implements Observer {
 //        UpdateTheLog("<Sending msg> "+message);
 //        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
 //    }
-
     private void sendMessage(String message, String peerIp, int peerPort) {
         System.out.println("sending message: " + message + " from:" + Config.MY_IP + ":" + Config.MY_PORT + " to:" + peerIp + ":" + peerPort);
         Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
@@ -226,47 +225,47 @@ public class Node extends Observable implements Observer {
     //Store the files children have in key,peers format
     private HashMap<String, String[]> chilrensFiles = new HashMap<String, String[]>();
 
-    public HashMap getMyFiles(){
+    public HashMap getMyFiles() {
         return myFiles;
     }
-    
+
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
         UDPResponse receivedMessage = (UDPResponse) arg;
         String incoming = receivedMessage.getData();
-        System.out.println("incoming message:"+incoming);
+        System.out.println("incoming message:" + incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
         String requesterIp = null;
         int requesterPort = 0;
-        
-                String info = requesterIp + ":" + requesterPort;  
-       /* if (msgType == MessageType.SEROK) {
-            peerIp = msg[3];
-            peerPort = Integer.parseInt(msg[4]);
-        } else if(msgType == MessageType.JOINOK){}
-        else {
-            peerIp = msg[2];
-            System.out.println("Peer port: "+msg[3]);
-            peerPort = Integer.parseInt(msg[3].trim());
+
+        String info = requesterIp + ":" + requesterPort;
+        /* if (msgType == MessageType.SEROK) {
+         peerIp = msg[3];
+         peerPort = Integer.parseInt(msg[4]);
+         } else if(msgType == MessageType.JOINOK){}
+         else {
+         peerIp = msg[2];
+         System.out.println("Peer port: "+msg[3]);
+         peerPort = Integer.parseInt(msg[3].trim());
             
-        }*/
-        switch(msgType){
-            case SEROK:            
+         }*/
+        switch (msgType) {
+            case SEROK:
                 requesterIp = msg[3].trim();
                 requesterPort = Integer.parseInt(msg[4].trim());
                 break;
 
             case JOINOK:
                 break;
-                
-            default: 
+
+            default:
                 requesterIp = msg[2].trim();
-                System.out.println("Peer port: "+msg[3]);
-                requesterPort = Integer.parseInt(msg[3].trim());                
+                System.out.println("Peer port: " + msg[3]);
+                requesterPort = Integer.parseInt(msg[3].trim());
         }
-        
+
         String outGoingMessage;
         switch (msgType) {
             // for inquire msg : <length INQUIRE IP_address port_no is_super>
@@ -277,7 +276,7 @@ public class Node extends Observable implements Observer {
                     sendMessage(outGoingMessage, requesterIp, requesterPort);
                 } else {
                     String[] superNodeInfo = mySuperNode.split(":");
-                    String message = (new Message(MessageType.INQUIREOK, superNodeInfo[0], Integer.parseInt(superNodeInfo[1]),"")).getMessage();
+                    String message = (new Message(MessageType.INQUIREOK, superNodeInfo[0], Integer.parseInt(superNodeInfo[1]), "")).getMessage();
                     sendMessage(message, requesterIp, requesterPort);
                 }
                 break;
@@ -286,9 +285,9 @@ public class Node extends Observable implements Observer {
                 inquireResponses--;
                 String name = myName;
                 if (isSuper) {
-                   name = "SUPER" + name;
+                    name = "SUPER" + name;
                 } else {
-                   name = "NORMAL" + name;
+                    name = "NORMAL" + name;
                 }
                 outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, name)).getMessage();
                 sendMessage(outGoingMessage, requesterIp, requesterPort);
@@ -297,13 +296,12 @@ public class Node extends Observable implements Observer {
             // for join req : <length JOIN IP_address port_no>
             case JOIN:
                 String requesterName = msg[3];
-                if (requesterName.startsWith("SUPER")){
+                if (requesterName.startsWith("SUPER")) {
                     System.out.println("Added peer super node:" + requesterName);
                     superPeers.add(info);
-                }
-                else if (requesterName.startsWith("NORMAL")){
+                } else if (requesterName.startsWith("NORMAL")) {
                     System.out.println("Added child node:" + requesterName);
-                    childNodes.add(info);                    
+                    childNodes.add(info);
                 }
                 outGoingMessage = (new Message(MessageType.JOINOK, myIp, myPort, myName)).getMessage();
                 sendMessage(outGoingMessage, requesterIp, requesterPort);
@@ -313,7 +311,7 @@ public class Node extends Observable implements Observer {
                 String joinedPeerIp = receivedMessage.getIpAddress();
                 int joinedPeerPort = joinRequestSentPeers.get(joinedPeerIp);
                 joinRequestSentPeers.remove(joinedPeerIp);
-                info = joinedPeerIp + ":" + joinedPeerPort;  
+                info = joinedPeerIp + ":" + joinedPeerPort;
                 if (isSuper) {
                     String superPeer = info;
                     superPeers.add(superPeer);
@@ -324,7 +322,6 @@ public class Node extends Observable implements Observer {
                 }
                 break;
             case SER:
-                incoming = (String) arg;
                 String[] messageComponents = incoming.split("\"");
                 String[] searcherIpPort = messageComponents[0].split(" ");
                 String searcherIp = searcherIpPort[2];
@@ -336,32 +333,51 @@ public class Node extends Observable implements Observer {
                 }
                 System.out.println("Search message received for key:" + fileKey);
                 //check if I have the file
-                if (myFiles.containsKey(fileKey.toLowerCase())) {
-                    ArrayList<String> files = myFiles.get(fileKey);
-                    int noOfFiles = files.size();
-                    String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();
-                    System.out.println("Created response:" + response);
-                    sendMessage(response, searcherIp, searcherPort);
-                }
-                if (isSuper) {
-                    //check if my children have the file
-                    if (chilrensFiles.containsKey(fileKey)) {
-                        String[] peersWithFile = chilrensFiles.get(fileKey);
-                        for (String peer : peersWithFile) {
-                            String[] ipPort = peer.split(":");
-                            search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
-                        }
-                    } //else, search it from other connected super peers
-                    else {
-                        for (String peer : superPeers) {
-                            String[] ipPort = peer.split(":");
-                            search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+                if (hopCount < Config.TTL) {
+                    if (myFiles.containsKey(fileKey.toLowerCase())) {
+                        ArrayList<String> files = myFiles.get(fileKey);
+                        int noOfFiles = files.size();
+                        //first send the list of files to the searcher
+                        String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();
+                        System.out.println("Created response:" + response);
+                        sendMessage(response, searcherIp, searcherPort);
+                    }
+                    //if I am a super peer, forward the search message to respective peers
+                    if (isSuper) {
+                        //forward the search query to a random peers
+                        int randomPeerNumer = getRandomNo(superPeers.size());
+                        String[] ipPort = (superPeers.get(randomPeerNumer)).split(":");
+                        search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+
+                        //next forward the search query to children having the file
+                        if (chilrensFiles.containsKey(fileKey)) {
+                            String[] peersWithFile = chilrensFiles.get(fileKey);
+                            for (String peer : peersWithFile) {
+                                ipPort = peer.split(":");
+                                search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+                            }
                         }
                     }
+//                    
+//                    if (isSuper) {
+//                        //check if my children have the file
+//                        if (chilrensFiles.containsKey(fileKey)) {
+//                            String[] peersWithFile = chilrensFiles.get(fileKey);
+//                            for (String peer : peersWithFile) {
+//                                String[] ipPort = peer.split(":");
+//                                search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+//                            }
+//                        } //else, search it from other connected super peers
+//                        else {
+//                            for (String peer : superPeers) {
+//                                String[] ipPort = peer.split(":");
+//                                search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+//                            }
+//                        }
+//                    }
                 }
                 break;
             case SEROK:
-                incoming = (String) arg;
                 String[] parts = incoming.split(" ");
                 int noOfFiles = Integer.parseInt(parts[2]);
                 switch (noOfFiles) {
@@ -386,20 +402,19 @@ public class Node extends Observable implements Observer {
                 int length = msg.length;
                 //if its just a child asking to leave, remove him from the childNodes list 
                 //and remove all file names from the super node which were in the leaving node but not in any other children
-                if("CHILD-LEAVING".equals(msg[length].trim())){
+                if ("CHILD-LEAVING".equals(msg[length].trim())) {
                     //TO-DO: need to remove all file names from the super node which were in the leaving node but not in any other children
-                    childNodes.remove(msg[2].trim()+":"+msg[3].trim());
-                }
-                //if it is a super node that is leaving, take the ip and port it sends and send an INQUIRE message to it asking to connect
-                else{
-                    String[] ipPort=msg[length].split(":");
+                    childNodes.remove(msg[2].trim() + ":" + msg[3].trim());
+                } //if it is a super node that is leaving, take the ip and port it sends and send an INQUIRE message to it asking to connect
+                else {
+                    String[] ipPort = msg[length].split(":");
                     outGoingMessage = (new Message(MessageType.INQUIRE, myIp, myPort, "")).getMessage();
                     sendMessage(outGoingMessage, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
                 }
-                            
+
             case LEAVEOK:
                 break;
-                
+
         }
 
     }
@@ -409,14 +424,14 @@ public class Node extends Observable implements Observer {
         RegisterResponse response = register();
 
         if (response.isSucess()) {
-           
+
             Thread reciever = new Thread(Reciever.getInstance());
             reciever.start();
 
             //now join the network
             String[] peerIPs = response.getPeerIps();
             System.out.println("Peer IPs");
-            if (peerIPs!=null) {               
+            if (peerIPs != null) {
                 for (String i : peerIPs) {
                     System.out.println(i);
                 }
@@ -453,7 +468,7 @@ public class Node extends Observable implements Observer {
                         }
                         inquireResponses = 1;
                         System.out.println("random peer: " + peerIPs[peer]);
-                        String outGoingMessage = (new Message(MessageType.INQUIRE, myIp, myPort, "")).getMessage();                            
+                        String outGoingMessage = (new Message(MessageType.INQUIRE, myIp, myPort, "")).getMessage();
                         sendMessage(outGoingMessage, peerIPs[peer], peerPorts[peer]);
                     }
                 }
@@ -474,15 +489,13 @@ public class Node extends Observable implements Observer {
 
     public void search(String fileName) {
         String[] ipPort;
-        if (isSuper){
+        if (isSuper) {
             int noOfSuperPeers = superPeers.size();
-            int randomSuperPeer = (int)(Math.random()*1000) % noOfSuperPeers;
+            int randomSuperPeer = (int) (Math.random() * 1000) % noOfSuperPeers;
             ipPort = (superPeers.get(randomSuperPeer)).split(":");
-        }
-        else {
+        } else {
             ipPort = mySuperNode.split(":");
         }
-        
         search(fileName, ipPort[0], Integer.parseInt(ipPort[1]));
     }
 
@@ -509,52 +522,49 @@ public class Node extends Observable implements Observer {
     public void search(String fileName, String peerIp, int peerPort) {
         search(fileName, Config.MY_IP, Config.MY_PORT, peerIp, peerPort);
     }
-    
-    
-    public void UpdateTheLog(String msg){
+
+    public void UpdateTheLog(String msg) {
         setChanged();
         notifyObservers(msg);
         clearChanged();
     }
-    
-    public void leave(){
+
+    public void leave() {
         String[] ipPort;
         String message;
         //if I am a superNode 
-        if(isSuper){
+        if (isSuper) {
             //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
-            int noOfPeers=superPeers.size();
-            for(int i=0;i<noOfPeers;i++){               
-                ipPort= superPeers.get(i).split(":");
-                if(i<noOfPeers/2){
+            int noOfPeers = superPeers.size();
+            for (int i = 0; i < noOfPeers; i++) {
+                ipPort = superPeers.get(i).split(":");
+                if (i < noOfPeers / 2) {
                     //if the index of the super peer in the super peer array list is < length/2 then direct him to join (i+1)th super peer
-                    message = (new Message(MessageType.LEAVE,myIp,myPort,superPeers.get(i+1))).getMessage();
-                }else{
-                    message = (new Message(MessageType.LEAVE,myIp,myPort,superPeers.get(i-1))).getMessage();
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i + 1))).getMessage();
+                } else {
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i - 1))).getMessage();
                 }
-                sendMessage(message, ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));
+                sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
             }
-            
+
             //send messages to all children saying I am leaving and give them the ip and port of a super peer to connect with
             int noOfChildren = childNodes.size();
-            for(int i=0;i<noOfChildren;i++){
-                ipPort= childNodes.get(i).split(":");
-                if(i<=noOfPeers){
-                    message= (new Message(MessageType.LEAVE,myIp,myPort,superPeers.get(i))).getMessage();
+            for (int i = 0; i < noOfChildren; i++) {
+                ipPort = childNodes.get(i).split(":");
+                if (i <= noOfPeers) {
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i))).getMessage();
+                } else {
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i - noOfPeers))).getMessage();
                 }
-                else{
-                    message= (new Message(MessageType.LEAVE,myIp,myPort,superPeers.get(i-noOfPeers))).getMessage();
-                }  
-                sendMessage(message, ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));
+                sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
             }
-        }
-        //if I am not a super Node then just tell the super peer that I am leaving
-        else{
-            ipPort=mySuperNode.split(":");
+        } //if I am not a super Node then just tell the super peer that I am leaving
+        else {
+            ipPort = mySuperNode.split(":");
             //just pass null to show that I am a normal node
-            message = (new Message(MessageType.LEAVE,myIp,myPort,null)).getMessage();
+            message = (new Message(MessageType.LEAVE, myIp, myPort, null)).getMessage();
             sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
         }
     }
-        
+
 }

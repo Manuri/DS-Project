@@ -42,7 +42,7 @@ public class Config {
     static  int BOOTSTRAP_PORT =  9876;
     static ArrayList<String> availableFiles = new ArrayList<>(); 
    
-    
+    static int TTL = 5;
     public void addNewFile(String fileName){
         availableFiles.add(fileName); 
     }
