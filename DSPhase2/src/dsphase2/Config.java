@@ -31,7 +31,7 @@ public class Config {
     static  String MY_IP = "192.168.43.254";
 
     static  int MY_PORT = 5002;
-    static  String MY_NAME = "Amaya";
+    static  String MY_NAME = "A";
     static  boolean isSuper = true;
     
 
