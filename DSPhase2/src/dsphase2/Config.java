@@ -29,11 +29,14 @@ public class Config {
     static ConfigWindow CONFIG_WINDOW; 
     
     static  String MY_IP = "192.168.43.254";
+
     static  int MY_PORT = 5002;
-    static  String MY_NAME = "Dinithi";
-    static  boolean isSuper = false;
+    static  String MY_NAME = "Amaya";
+    static  boolean isSuper = true;
     
+
     static  String BOOTSTRAP_IP = "192.168.43.69";
+
     static  int BOOTSTRAP_PORT =  9876;
     static ArrayList<String> availableFiles = new ArrayList<>(); 
    

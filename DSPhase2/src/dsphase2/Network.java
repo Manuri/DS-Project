@@ -29,7 +29,7 @@ public class Network implements Runnable {
         
     
                 /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+      /*  java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 try {
@@ -50,8 +50,8 @@ public class Network implements Runnable {
            
             
             
-        });
-        
+        });*/
+
 //            Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
 //            n1.start();
 //            //Thread.sleep(2000);
