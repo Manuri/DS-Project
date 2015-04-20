@@ -395,12 +395,12 @@ public class Node extends Observable implements Observer {
             if (peerIPs != null) {
                 if (superNode) {
                     System.out.println("I am Super");
-                    int[] arr;
+                    int[] randomPeers;
                     if (peerIPs.length >= 2) {
                         //get random 2 peers to connect and check for super peer
-                        arr = getRandomTwo(peerIPs.length);
+                        randomPeers = getRandomTwo(peerIPs.length);
                         inquireResponses = 2;
-                        for (int peer : arr) {
+                        for (int peer : randomPeers) {
                             System.out.println("random peer: " + peerIPs[peer]);
                             sendMessage(MessageType.INQUIRE, peerIPs[peer], peerPorts[peer]);
                         }
@@ -434,6 +434,9 @@ public class Node extends Observable implements Observer {
 //                continue;
 //            }
         }
+        String message = "Peer " + name + " joined the network...";
+        System.out.println(message);
+        UpdateTheLog(message);
     }
 
     public void search(String fileName) {
