@@ -185,6 +185,8 @@ public class Node extends Observable implements Observer {
         Sender.getInstance().sendTCPMessage(message);
     }
 
+    //can pass another argument(eg: String arg) and pass that on to Message constructor 
+    //in addition to what is already in it. Then we can replace the function below with this 
     private void sendMessage(MessageType msgType, String peerIp, int peerPort) {
         String message = (new Message(msgType, ip, port, name)).getMessage();
         UpdateTheLog("<Sending msg> "+message);
@@ -249,13 +251,7 @@ public class Node extends Observable implements Observer {
                 peerIp = msg[3].trim();
                 peerPort = Integer.parseInt(msg[4].trim());
                 break;
-                
-            case LEAVE:
-                
-                
-            case LEAVEOK:
-                break;
-                
+
             case JOINOK:
                 break;
                 
@@ -357,6 +353,22 @@ public class Node extends Observable implements Observer {
                 break;
             case LEAVE:
                 incoming = (String) arg;
+                int length = msg.length;
+                //if its just a child asking to leave, remove him from the childNodes list 
+                //and remove all file names from the super node which were in the leaving node but not in any other children
+                if("CHILD-LEAVING".equals(msg[length].trim())){
+                    //TO-DO: need to remove all file names from the super node which were in the leaving node but not in any other children
+                    childNodes.remove(msg[2].trim()+":"+msg[3].trim());
+                }
+                //if it is a super node that is leaving, take the ip and port it sends and send an INQUIRE message to it asking to connect
+                else{
+                    String[] ipPort=msg[length].split(":");
+                    sendMessage(MessageType.INQUIRE, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+                }
+                            
+            case LEAVEOK:
+                break;
+                
         }
 
     }
@@ -461,20 +473,41 @@ public class Node extends Observable implements Observer {
     
     public void leave(){
         String[] ipPort;
+        String message;
+        //if I am a superNode 
         if(superNode){
-            for(String peer : superPeers){
-                ipPort= peer.split(":");
-                sendMessage(MessageType.LEAVE,ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));
+            //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
+            int noOfPeers=superPeers.size();
+            for(int i=0;i<noOfPeers;i++){               
+                ipPort= superPeers.get(i).split(":");
+                if(i<noOfPeers/2){
+                    //if the index of the super peer in the super peer array list is < length/2 then direct him to join (i+1)th super peer
+                    message = (new Message(MessageType.LEAVE,ip,port,superPeers.get(i+1))).getMessage();
+                }else{
+                    message = (new Message(MessageType.LEAVE,ip,port,superPeers.get(i-1))).getMessage();
+                }
+                sendMessage(message, ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));
             }
             
-            for(String child: childNodes){
-                ipPort= child.split(":");
-                sendMessage(MessageType.LEAVE,ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));                
+            //send messages to all children saying I am leaving and give them the ip and port of a super peer to connect with
+            int noOfChildren = childNodes.size();
+            for(int i=0;i<noOfChildren;i++){
+                ipPort= childNodes.get(i).split(":");
+                if(i<=noOfPeers){
+                    message= (new Message(MessageType.LEAVE,ip,port,superPeers.get(i))).getMessage();
+                }
+                else{
+                    message= (new Message(MessageType.LEAVE,ip,port,superPeers.get(i-noOfPeers))).getMessage();
+                }  
+                sendMessage(message, ipPort[0].trim() , Integer.parseInt(ipPort[1].trim()));
             }
         }
+        //if I am not a super Node then just tell the super peer that I am leaving
         else{
             ipPort=supernode.split(":");
-            sendMessage(MessageType.LEAVE, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+            //just pass null to show that I am a normal node
+            message = (new Message(MessageType.LEAVE,ip,port,null)).getMessage();
+            sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
         }
     }
         

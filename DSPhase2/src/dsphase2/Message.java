@@ -34,7 +34,14 @@ public class Message {
                 break; 
             case INQUIREOK: message= appendLength("INQUIREOK"+" "+ip+" "+port);
                 break;
-           
+            case LEAVE:
+                String peerIpPort = name;
+                if(peerIpPort!=null){
+                    message=appendLength("LEAVE"+" "+ip+" "+port+" "+name);
+                }else{
+                    message=appendLength("LEAVE"+" "+ip+" "+port+" "+"CHILD-LEAVING");
+                }
+                break;
         }
     }
     
