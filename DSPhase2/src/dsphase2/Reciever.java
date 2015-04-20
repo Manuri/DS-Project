@@ -55,7 +55,7 @@ public class Reciever extends Observable implements Runnable{
                     System.out.println("NUll pointer exception");
                 }
                 if(incomingData.length>0){
-                String recievedString = new String(dgp.getData()+":"+dgp.getAddress()+":"+dgp.getPort());
+                String recievedString = new String(dgp.getData()+":"+dgp.getAddress().getHostAddress()+":"+dgp.getAddress().getHostAddress());
                     
                 System.out.println("Datagram received, received message: "+ recievedString);
                     setChanged();
