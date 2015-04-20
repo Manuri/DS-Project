@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -181,8 +183,9 @@ public class ConfigWindow extends JFrame implements Observer {
         jButton1.setText("Join the Network");
           jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                Config.MY_IP = jTextField1.getText();
-//                Config.MY_PORT= Integer.parseInt(jTextField2.getText()); 
+                try {
+                    //                Config.MY_IP = jTextField1.getText();
+//                Config.MY_PORT= Integer.parseInt(jTextField2.getText());
 //                Config.MY_NAME = jTextField3.getText();
 //                Config.BOOTSTRAP_IP= jTextField4.getText();
 //                Config.BOOTSTRAP_PORT= Integer.parseInt(jTextField5.getText()); 
@@ -194,8 +197,13 @@ public class ConfigWindow extends JFrame implements Observer {
 //                if(jRadioButton3.isSelected()){
 //                    isWebServices = true; 
 //                }
-                Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
-                n1.start();
+                    Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
+                    n1.start();
+                    Thread.sleep(2000);
+                    n1.search("Harry");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ConfigWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
