@@ -32,7 +32,7 @@ public class Config {
 
     static  int MY_PORT = 5002;
 
-    static  String MY_NAME = "Dinithi";
+    static  String MY_NAME = "Sasikala";
     static  boolean isSuper = true;
     
 
