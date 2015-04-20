@@ -231,7 +231,8 @@ public class Node extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
-        String incoming = (String) arg;
+        String[] incomingMessageComponents = ((String) arg).split(":");
+        String incoming = incomingMessageComponents[0];
         System.out.println("incoming message:"+incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
@@ -288,8 +289,7 @@ public class Node extends Observable implements Observer {
                    name = "NORMAL" + name;
                 }
                 outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, name)).getMessage();
-                sendMessage(outGoingMessage, requesterIp, requesterPort);
-             
+                sendMessage(outGoingMessage, requesterIp, requesterPort);             
                 break;
             // for join req : <length JOIN IP_address port_no>
             case JOIN:
@@ -307,7 +307,7 @@ public class Node extends Observable implements Observer {
                 break;
             //for join resp length JOINOK value
             case JOINOK:
-                info = requesterIp + ":" + requesterPort;  
+                info = incomingMessageComponents[1] + ":" + incomingMessageComponents[2];  
                 if (isSuper) {
                     String superPeer = info;
                     superPeers.add(superPeer);

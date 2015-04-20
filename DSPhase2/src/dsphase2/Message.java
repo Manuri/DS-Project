@@ -20,7 +20,7 @@ public class Message {
                 break;
             case UNREG:message=appendLength("UNREG"+" "+ip+" "+port+" "+name);
                 break;
-            case JOIN:message=appendLength("JOIN"+" "+ip+" "+port);
+            case JOIN:message=appendLength("JOIN"+" "+ip+" "+port+" "+name);
                 break;
             case JOINOK: message=appendLength("JOINOK"+" "+0);
                 break;
