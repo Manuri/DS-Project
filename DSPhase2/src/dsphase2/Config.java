@@ -35,7 +35,7 @@ public class Config {
     static  boolean isSuper = true;
     
 
-    static  String BOOTSTRAP_IP = "192.168.43.69";
+    static  String BOOTSTRAP_IP = "127.0.0.1";//"192.168.43.69";
 
     static  int BOOTSTRAP_PORT =  9876;
     static ArrayList<String> availableFiles = new ArrayList<>(); 
