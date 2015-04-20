@@ -295,9 +295,11 @@ public class Node extends Observable implements Observer {
             case JOIN:
                 String requesterName = msg[3];
                 if (requesterName.startsWith("SUPER")){
+                    System.out.println("Added peer super node:" + requesterName);
                     superPeers.add(info);
                 }
                 else if (requesterName.startsWith("NORMAL")){
+                    System.out.println("Added child node:" + requesterName);
                     childNodes.add(info);                    
                 }
                 outGoingMessage = (new Message(MessageType.JOINOK, myIp, myPort, myName)).getMessage();
@@ -309,8 +311,10 @@ public class Node extends Observable implements Observer {
                 if (isSuper) {
                     String superPeer = info;
                     superPeers.add(superPeer);
+                    System.out.println("Added peer super node: " + info);
                 } else {
                     mySuperNode = info;
+                    System.out.println("Added my super node: " + info);
                 }
                 break;
             case SER:
