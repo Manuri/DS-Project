@@ -53,7 +53,11 @@ public class ConfigWindow extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         
-        jTextArea1.append("[Netlingo]: "+((UDPResponse)arg).getData()+" ["+getTimeStamp()+"] \n"); 
+        if(arg instanceof UDPResponse){
+             jTextArea1.append("[Netlingo]: "+((UDPResponse)arg).getData().trim()+" ["+getTimeStamp()+"] \n");
+        }else{
+        jTextArea1.append("[Netlingo]: "+((String)arg)+" ["+getTimeStamp()+"] \n");
+        }
     }
 
     
