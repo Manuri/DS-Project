@@ -62,7 +62,7 @@ public class Sender {
         Socket clientSocket = null;
         PrintWriter outToServer=null;
         BufferedReader inFromServer=null;
-        char[] buf=null;
+        char[] buf=new char[10000];
         try{
             clientSocket = new Socket(bootstrapIP, bootStrapPort);
             
@@ -99,7 +99,7 @@ public class Sender {
             }
         }
         
-        return String.valueOf(buf);
+        return String.valueOf(buf).trim();
     }
     
 }

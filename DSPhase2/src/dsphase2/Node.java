@@ -73,6 +73,7 @@ public class Node extends Observable implements Observer {
         String message = (new Message(MessageType.REG, ip, port, name)).getMessage();
         UpdateTheLog("<Sending msg> "+message + " >> to BS"); 
         String response = Sender.getInstance().sendTCPMessage(message);
+        
         UpdateTheLog("<Received msg> "+response+" << from BS");
         System.out.println("Response:" + response);
         String[] splitted = response.split(" ");

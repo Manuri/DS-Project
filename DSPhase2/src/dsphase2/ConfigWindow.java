@@ -177,20 +177,21 @@ public class ConfigWindow extends JFrame implements Observer {
         jButton1.setText("Join the Network");
           jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Config.MY_IP = jTextField1.getText();
-                Config.MY_PORT= Integer.parseInt(jTextField2.getText()); 
-                Config.MY_NAME = jTextField3.getText();
-                Config.BOOTSTRAP_IP= jTextField4.getText();
-                Config.BOOTSTRAP_PORT= Integer.parseInt(jTextField5.getText()); 
-                boolean isSuper = false;
-                boolean isWebServices = false; 
-                if(jRadioButton1.isSelected()){
-                    isSuper = true; 
-                }
-                if(jRadioButton3.isSelected()){
-                    isWebServices = true; 
-                }
-         
+//                Config.MY_IP = jTextField1.getText();
+//                Config.MY_PORT= Integer.parseInt(jTextField2.getText()); 
+//                Config.MY_NAME = jTextField3.getText();
+//                Config.BOOTSTRAP_IP= jTextField4.getText();
+//                Config.BOOTSTRAP_PORT= Integer.parseInt(jTextField5.getText()); 
+//                boolean isSuper = false;
+//                boolean isWebServices = false; 
+//                if(jRadioButton1.isSelected()){
+//                    isSuper = true; 
+//                }
+//                if(jRadioButton3.isSelected()){
+//                    isWebServices = true; 
+//                }
+                Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
+                n1.start();
             }
         });
 
