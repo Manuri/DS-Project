@@ -13,24 +13,23 @@ import javax.swing.UIManager;
  */
 public class Network implements Runnable {
 
+        
+    static ConfigWindow configWindow; 
     @Override
     public void run() {
                  //When configured as normal node
              Config.CONFIG_WINDOW = configWindow; 
-           Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
-            n1.start();
+//           Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
+//            n1.start();
             //Thread.sleep(2000);
           //  n1.search("Windows");
     }
     
-    
-    
-    static ConfigWindow configWindow; 
     public static void main(String[] args) {
         
     
                 /* Create and display the form */
-      /*  java.awt.EventQueue.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 try {
@@ -41,16 +40,22 @@ public class Network implements Runnable {
                 ConfigWindow configWindow = new ConfigWindow();
                 Network.configWindow = configWindow; 
                 configWindow.setVisible(true);
+            //    Network n = new Network(); 
+            //    Thread t = new Thread(n); 
+             //   t.start();
+            
             }
             
-            Network n = new Network(); 
-            Thread t = new Thread(n);
-         
+           
+           
             
             
-        });*/
+        });
+
+//            Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
+//            n1.start();
+//            //Thread.sleep(2000);
+//          //  n1.search("Windows");
         
-        Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
-            n1.start();
     }
 }
