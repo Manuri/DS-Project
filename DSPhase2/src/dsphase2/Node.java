@@ -50,7 +50,7 @@ public class Node extends Observable implements Observer {
         if (superNode) {
             addChidrensFiles();
         }
-        //this.addObserver(Config.CONFIG_WINDOW);
+        this.addObserver(Config.CONFIG_WINDOW);
     }
 
     private void addMyFiles() {

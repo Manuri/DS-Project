@@ -38,12 +38,8 @@ public class Network implements Runnable {
                 } catch (Exception e) {
                 }
                 ConfigWindow configWindow = new ConfigWindow();
-                Network.configWindow = configWindow; 
+                Config.CONFIG_WINDOW = configWindow; 
                 configWindow.setVisible(true);
-            //    Network n = new Network(); 
-            //    Thread t = new Thread(n); 
-             //   t.start();
-            
             }
             
            
