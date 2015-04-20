@@ -31,11 +31,11 @@ public class Config {
     static  String MY_IP = "192.168.43.254";
 
     static  int MY_PORT = 5002;
-    static  String MY_NAME = "A";
+    static  String MY_NAME = "Dinithi";
     static  boolean isSuper = true;
     
 
-    static  String BOOTSTRAP_IP = "127.0.0.1";//"192.168.43.69";
+    static  String BOOTSTRAP_IP = "192.168.43.70";
 
     static  int BOOTSTRAP_PORT =  9876;
     static ArrayList<String> availableFiles = new ArrayList<>(); 

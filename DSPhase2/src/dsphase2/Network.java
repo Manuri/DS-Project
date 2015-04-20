@@ -40,12 +40,7 @@ public class Network implements Runnable {
                 ConfigWindow configWindow = new ConfigWindow();
                 Config.CONFIG_WINDOW = configWindow; 
                 configWindow.setVisible(true);
-            }
-            
-           
-           
-            
-            
+            }     
         });
 
 //            Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);

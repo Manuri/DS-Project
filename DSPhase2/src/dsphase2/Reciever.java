@@ -59,7 +59,7 @@ public class Reciever extends Observable implements Runnable{
                     
                 System.out.println("Datagram received, received message: "+ recievedString);
                     setChanged();
-                    notifyObservers(recievedString);
+                    notifyObservers(recievedString.trim());
                     clearChanged();
                 }
                 
