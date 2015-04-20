@@ -231,8 +231,8 @@ public class Node extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
-        String[] incomingMessageComponents = ((String) arg).split(":");
-        String incoming = incomingMessageComponents[0];
+        UDPResponse receivedMessage = (UDPResponse) arg;
+        String incoming = receivedMessage.getData();
         System.out.println("incoming message:"+incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
@@ -307,7 +307,7 @@ public class Node extends Observable implements Observer {
                 break;
             //for join resp length JOINOK value
             case JOINOK:
-                info = incomingMessageComponents[1] + ":" + incomingMessageComponents[2];  
+                info = receivedMessage.getIpAddress() + ":" + receivedMessage.getPort();  
                 if (isSuper) {
                     String superPeer = info;
                     superPeers.add(superPeer);
