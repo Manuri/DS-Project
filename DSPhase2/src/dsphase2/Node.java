@@ -241,7 +241,7 @@ public class Node extends Observable implements Observer {
         String requesterIp = null;
         int requesterPort = 0;
 
-        String info = requesterIp + ":" + requesterPort;
+        
         /* if (msgType == MessageType.SEROK) {
          peerIp = msg[3];
          peerPort = Integer.parseInt(msg[4]);
@@ -266,7 +266,7 @@ public class Node extends Observable implements Observer {
                 System.out.println("Peer port: " + msg[3]);
                 requesterPort = Integer.parseInt(msg[3].trim());
         }
-
+        String info = requesterIp + ":" + requesterPort;
         String outGoingMessage;
         switch (msgType) {
             // for inquire msg : <length INQUIRE IP_address port_no is_super>
@@ -492,7 +492,9 @@ public class Node extends Observable implements Observer {
         String[] ipPort;
         if (isSuper) {
             int noOfSuperPeers = superPeers.size();
-            int randomSuperPeer = (int) (Math.random() * 1000) % noOfSuperPeers;
+            int randomSuperPeer = getRandomNo(noOfSuperPeers);
+            System.out.println("Selected random index for the super peer: " + randomSuperPeer);
+            System.out.println("Selected super peer to send search message: " + superPeers.get(randomSuperPeer));
             ipPort = (superPeers.get(randomSuperPeer)).split(":");
         } else {
             ipPort = mySuperNode.split(":");
@@ -521,7 +523,7 @@ public class Node extends Observable implements Observer {
     }
 
     public void search(String fileName, String peerIp, int peerPort) {
-        search(fileName, Config.MY_IP, Config.MY_PORT, peerIp, peerPort);
+        search(fileName, myIp, myPort, peerIp, peerPort);
     }
 
     public void UpdateTheLog(String msg) {
