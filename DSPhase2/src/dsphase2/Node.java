@@ -53,9 +53,6 @@ public class Node extends Observable implements Observer {
         isSuper = Config.isSuper;
         joinRequestSentPeers = new HashMap<>();
         addMyFiles(2);
-        if (isSuper) {
-            addChidrensFiles();
-        }
         this.addObserver(Config.CONFIG_WINDOW);
     }
 
