@@ -382,6 +382,7 @@ public class Node extends Observable implements Observer {
                     if (myFiles.containsKey(fileKey)) {
                         ArrayList<String> files = myFiles.get(fileKey);
                         int noOfFiles = files.size();
+                        files.add(0,fileKey);
                         //first send the list of files to the searcher
                         String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();
                         System.out.println("Created response:" + response);
