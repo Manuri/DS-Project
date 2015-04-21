@@ -227,6 +227,15 @@ public class Node extends Observable implements Observer {
     private int getRandomNo(int number) {
         return (int) (Math.random() * 1000 % number);
     }
+    
+    private int getRandomNo(int number, int exception){
+        if(number==1){
+            return -1;
+        }
+        int value;
+        while((value=getRandomNo(number))==exception);
+        return value;
+    }
     //my files
     //stored as an invereted index
     //format term:set of files
@@ -387,7 +396,8 @@ public class Node extends Observable implements Observer {
                     //if I am a super peer, forward the search message to respective peers
                     if (isSuper) {
                         //forward the search query to a random peers
-                        int randomPeerNumer = getRandomNo(superPeers.size());
+                        
+                        int randomPeerNumer = getRandomNo(superPeers.size(),superPeers.indexOf(searcherIp + ":" + searcherPort));
                         String[] ipPort = (superPeers.get(randomPeerNumer)).split(":");
                         ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
 
