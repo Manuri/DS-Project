@@ -347,7 +347,7 @@ public class Node extends Observable implements Observer {
                 String fileKey = messageComponents[1];
                 int hopCount = 1;
                 System.out.println("Hop count:" + messageComponents[2]);
-                if ("\"".equals(messageComponents[2])) {
+                if ("".equals(messageComponents[2])) {
                 } else {
                     hopCount = 1 + Integer.parseInt(messageComponents[2].trim());
                 }
