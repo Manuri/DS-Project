@@ -382,9 +382,8 @@ public class Node extends Observable implements Observer {
                     if (myFiles.containsKey(fileKey)) {
                         ArrayList<String> files = myFiles.get(fileKey);
                         int noOfFiles = files.size();
-                        files.add(0,fileKey);
                         //first send the list of files to the searcher
-                        String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files)).getMessage();
+                        String response = (new Message(MessageType.SEROK, noOfFiles, Config.MY_IP, Config.MY_PORT, hopCount, files, fileKey)).getMessage();
                         System.out.println("Created response:" + response);
                         sendMessage(response, searcherIp, searcherPort);
                     }
@@ -402,7 +401,6 @@ public class Node extends Observable implements Observer {
                         if (chilrensFiles.containsKey(fileKey)) {
                             ArrayList<String> peersWithFile = chilrensFiles.get(fileKey);
                             for (String peer : peersWithFile) {
-                                ipPort = peer.split(":");
                                 ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                                 ipPort = peer.split(":");
                                 routingTable.put(ipPort[0]+fileKey, searcherIp+":"+searcherPort);

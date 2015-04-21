@@ -56,12 +56,12 @@ public class Message {
         message=appendLength("SER"+" "+ip+" "+port+" "+fileNanme+" "+hops);
     }
     
-    public Message(MessageType type, int noOfFiles, String ip, int port, int hops, ArrayList<String> files){
+    public Message(MessageType type, int noOfFiles, String ip, int port, int hops, ArrayList<String> files, String fileKey){
         switch(type){
         
             case SEROK: 
             {
-                String filesString="";
+                String filesString=fileKey;
                 for (String file : files) {
                     filesString = filesString +" "+ file;
                 }
