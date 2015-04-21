@@ -301,7 +301,7 @@ public class Node extends Observable implements Observer {
                 break;
             // for join req : <length JOIN IP_address port_no>
             case JOIN:
-                String requesterName = msg[3];
+                String requesterName = msg[4];
                 if (requesterName.startsWith("SUPER")) {
                     System.out.println("Added peer super node:" + requesterName);
                     superPeers.add(info);
