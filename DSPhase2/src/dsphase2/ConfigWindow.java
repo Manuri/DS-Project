@@ -22,7 +22,9 @@ import javax.swing.*;
  */
 public class ConfigWindow extends JFrame implements Observer {
 
-    /** Component  declaration*/
+    /**
+     * Component declaration
+     */
     private JButton jButton1, jButton2, jButton3;
     private JLabel jLabel1, jLabel10, jLabel11, jLabel12, jLabel13, jLabel2, jLabel3, jLabel4, jLabel5, jLabel6, jLabel7, jLabel8;
     private JRadioButton jRadioButton1, jRadioButton2, jRadioButton3, jRadioButton4;
@@ -33,7 +35,11 @@ public class ConfigWindow extends JFrame implements Observer {
     private JPanel jPanel1;
     private JList jList1;
 
-    /** Creates new form ConfigWindow */
+    Node n1;
+
+    /**
+     * Creates new form ConfigWindow
+     */
     public ConfigWindow() {
         this.setTitle("Netlingo File Sharing System: Config Window");
         System.out.println("hello");
@@ -48,22 +54,22 @@ public class ConfigWindow extends JFrame implements Observer {
         jRadioButton3.setSelected(true);
         communicationModeGroup.add(jRadioButton3);
         communicationModeGroup.add(jRadioButton4);
-  
+
         this.setResizable(false);
+
+        n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        
-        if(arg instanceof UDPResponse){
-             jTextArea1.append("[Netlingo]: "+((UDPResponse)arg).getData().trim()+" ["+getTimeStamp()+"] \n");
-        }else{
-        jTextArea1.append("[Netlingo]: "+((String)arg)+" ["+getTimeStamp()+"] \n");
+
+        if (arg instanceof UDPResponse) {
+            jTextArea1.append("[Netlingo]: " + ((UDPResponse) arg).getData().trim() + " [" + getTimeStamp() + "] \n");
+        } else {
+            jTextArea1.append("[Netlingo]: " + ((String) arg) + " [" + getTimeStamp() + "] \n");
         }
     }
 
-    
-    
     private void initComponents() {
 
         jPanel1 = new JPanel();
@@ -98,9 +104,8 @@ public class ConfigWindow extends JFrame implements Observer {
         jSeparator1 = new JSeparator();
         jScrollPane2 = new JScrollPane();
 
-
         jList1 = new JList();
-        
+
         try {
             InputStreamReader in = new InputStreamReader(getClass().getResourceAsStream("/resources/FileNames"), "UTF-8");
             Scanner s = new Scanner(in).useDelimiter("\n");
@@ -109,24 +114,25 @@ public class ConfigWindow extends JFrame implements Observer {
                 fileNames.add(s.next());
             }
             final String[] list = new String[fileNames.size()];
-            for(int i =0 ;i<fileNames.size();i++){
+            for (int i = 0; i < fileNames.size(); i++) {
                 list[i] = fileNames.get(i);
             }
-        jList1.setModel(new AbstractListModel() {
-            String[] strings = list;
-            public int getSize() {
-                return strings.length;
-            }
-            public Object getElementAt(int i) {
-                return strings[i];
-            }
-        });
-        jScrollPane2.setViewportView(jList1);
-           //  jComboBox1.setModel(new DefaultComboBoxModel(fileNames.toArray()));
+            jList1.setModel(new AbstractListModel() {
+                String[] strings = list;
+
+                public int getSize() {
+                    return strings.length;
+                }
+
+                public Object getElementAt(int i) {
+                    return strings[i];
+                }
+            });
+            jScrollPane2.setViewportView(jList1);
+            //  jComboBox1.setModel(new DefaultComboBoxModel(fileNames.toArray()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -181,7 +187,7 @@ public class ConfigWindow extends JFrame implements Observer {
 
         // joining action
         jButton1.setText("Join the Network");
-          jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     //                Config.MY_IP = jTextField1.getText();
@@ -197,16 +203,15 @@ public class ConfigWindow extends JFrame implements Observer {
 //                if(jRadioButton3.isSelected()){
 //                    isWebServices = true; 
 //                }
-                    Node n1 = Node.getInstance(Config.MY_IP,Config.MY_PORT,Config.MY_NAME);
+
                     n1.start();
                     Thread.sleep(2000);
-                    n1.search("Harry");
+                    //n1.search("Harry");
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ConfigWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-
 
         jButton2.setText("Leave the Network");
 
@@ -214,28 +219,47 @@ public class ConfigWindow extends JFrame implements Observer {
         jLabel6.setText("Mode of Execution");
 
         jButton3.setText("Search the Network");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    //                Config.MY_IP = jTextField1.getText();
+//                Config.MY_PORT= Integer.parseInt(jTextField2.getText());
+//                Config.MY_NAME = jTextField3.getText();
+//                Config.BOOTSTRAP_IP= jTextField4.getText();
+//                Config.BOOTSTRAP_PORT= Integer.parseInt(jTextField5.getText()); 
+//                boolean isSuper = false;
+//                boolean isWebServices = false; 
+//                if(jRadioButton1.isSelected()){
+//                    isSuper = true; 
+//                }
+//                if(jRadioButton3.isSelected()){
+//                    isWebServices = true; 
+//                }
+                    n1.search(jTextField6.getText());
+
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ConfigWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-         Font font1 = new Font("Tahoma", 0 , 11);
-     //    Font font = new Font("Tahoma", 0 , 11);
-         jTextArea1.setFont(font1); 
-         jTextArea1.setForeground(Color.BLUE); 
-       // jTextArea1.setBackground(Color.black);
-        jTextArea1.setEditable(false); 
+        Font font1 = new Font("Tahoma", 0, 11);
+        //    Font font = new Font("Tahoma", 0 , 11);
+        jTextArea1.setFont(font1);
+        jTextArea1.setForeground(Color.BLUE);
+        // jTextArea1.setBackground(Color.black);
+        jTextArea1.setEditable(false);
         jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        jTextArea1.append("[Netlingo]: Welcome to Demo Log View ["+getTimeStamp()+"]\n"); 
+        jTextArea1.append("[Netlingo]: Welcome to Demo Log View [" + getTimeStamp() + "]\n");
 
-        
-       
         jScrollPane1.setViewportView(jTextArea1);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel7.setText("File Name");
-
-
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -262,7 +286,7 @@ public class ConfigWindow extends JFrame implements Observer {
             public void run() {
 
                 ConfigWindow configWindow = new ConfigWindow();
-                Config.CONFIG_WINDOW = configWindow; 
+                Config.CONFIG_WINDOW = configWindow;
                 try {
                     UIManager.setLookAndFeel(
                             UIManager.getSystemLookAndFeelClassName());
@@ -270,13 +294,12 @@ public class ConfigWindow extends JFrame implements Observer {
                 }
                 new ConfigWindow().setVisible(true);
 
-
             }
         });
     }
-    
-    private String getTimeStamp(){
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()); 
+
+    private String getTimeStamp() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
     }
 }
 //IPadd textf1
