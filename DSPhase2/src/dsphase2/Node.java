@@ -329,9 +329,12 @@ public class Node extends Observable implements Observer {
                 int searcherPort = Integer.parseInt(searcherIpPort[3]);
                 String fileKey = messageComponents[1];
                 int hopCount = 1;
-                System.out.println("Hop count:" + messageComponents[2]);
-                if (!(messageComponents[2].length()==0)) {
+                System.out.println("Hop count length:" + messageComponents[2].length());
+                try{
                     hopCount = 1 + Integer.parseInt(messageComponents[2].trim());
+                }
+                catch(NumberFormatException e){
+                    hopCount = 1;
                 }
                 System.out.println("Search message received for key:" + fileKey);
                 //check if I have the file
