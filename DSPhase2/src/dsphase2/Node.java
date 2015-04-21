@@ -10,8 +10,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +39,7 @@ public class Node extends Observable implements Observer {
     //private final Sender com;
 
     private HashMap<String, Integer> joinRequestSentPeers;
-
+    
     public static Node getInstance(String ip, int port, String name) {
         if (instance == null) {
             instance = new Node(ip, port, name);
@@ -49,12 +52,8 @@ public class Node extends Observable implements Observer {
         this.myPort = port;
         this.myName = name;
         isSuper = Config.isSuper;
-        joinRequestSentPeers = new HashMap<String, Integer>();
-        addMyFiles(2
-        );
-        if (isSuper) {
-            addChidrensFiles();
-        }
+        joinRequestSentPeers = new HashMap<>();
+        addMyFiles(2);
         this.addObserver(Config.CONFIG_WINDOW);
     }
 
@@ -70,23 +69,18 @@ public class Node extends Observable implements Observer {
             while ((readLine = reader.readLine()) != null) {
                 if (lineNumber % numberOfNodes == ipRemainder) {
                     String[] terms = readLine.toLowerCase().split(" ");
+                    String fileName = readLine.replace(" ", "_");
                     for (String term : terms) {
                         if (myFiles.containsKey(term)) {
-                            (myFiles.get(term)).add(readLine);
+                            (myFiles.get(term)).add(fileName);
                         } else {
-                            ArrayList<String> files = new ArrayList<String>();
-                            files.add(readLine);
+                            ArrayList<String> files = new ArrayList<>();
+                            files.add(fileName);
                             myFiles.put(term, files);
                         }
                     }
                 }
                 lineNumber++;
-            //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
-
-                //myFiles.put("Adventures",new String[]{"Adventured of Tintin"});
-
-                //myFiles.put("Harry", new String[]{"Harry Potter"});
-
             }
             //myFiles.put("Windows",new String[]{"Windows XP","Windows 8"});
         } catch (FileNotFoundException ex) {
@@ -103,10 +97,21 @@ public class Node extends Observable implements Observer {
             System.out.println(myFiles);
         }
     }
-
-    private void addChidrensFiles() {
-        chilrensFiles.put("Adventures", new String[]{"127.0.0.1:5001"});
-        chilrensFiles.put("Windows", new String[]{"127.0.0.1:5001", "127.0.0.3:5001"});
+    
+    private void addChildrensFiles(String termsString, String childIp, int childPort){
+        Set<String> childTerms = chilrensFiles.keySet();
+        String[] terms = termsString.split(",");
+        for (String term : terms){
+            if (childTerms.contains(term)){
+                ArrayList<String> childrenHavingTerm = chilrensFiles.get(term);
+                childrenHavingTerm.add(childIp + ":" + String.valueOf(childPort));
+            }
+            else{
+                ArrayList<String> ipAddress = new ArrayList<>();
+                ipAddress.add(childIp + ":" + String.valueOf(childPort));
+                chilrensFiles.put(term, ipAddress);
+            }
+        }
     }
 
     public String getIp() {
@@ -226,9 +231,9 @@ public class Node extends Observable implements Observer {
     //my files
     //stored as an invereted index
     //format term:set of files
-    private HashMap<String, ArrayList<String>> myFiles = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, ArrayList<String>> myFiles = new HashMap<>();
     //Store the files children have in key,peers format
-    private HashMap<String, String[]> chilrensFiles = new HashMap<String, String[]>();
+    private HashMap<String, ArrayList<String>> chilrensFiles = new HashMap<>();
 
     public HashMap getMyFiles() {
         return myFiles;
@@ -266,7 +271,6 @@ public class Node extends Observable implements Observer {
 
             default:
                 requesterIp = msg[2].trim();
-                System.out.println("Peer port: " + msg[3]);
                 requesterPort = Integer.parseInt(msg[3].trim());
         }
         String info = requesterIp + ":" + requesterPort;
@@ -337,6 +341,23 @@ public class Node extends Observable implements Observer {
                 } else {
                     mySuperNode = info;
                     System.out.println("Added my super node: " + info);
+                    
+                    //Send the indexed terms for the files I have, to my super peer
+                    Iterator iterator = myFiles.keySet().iterator();
+                    String myTerms = "";
+                    while (iterator.hasNext()){
+                        myTerms = "," + (String)iterator.next();
+                    }
+                    outGoingMessage = new Message(MessageType.FILES,myIp,myPort,myTerms.substring(1)).getMessage();
+                    sendMessage(outGoingMessage, requesterIp, requesterPort);
+                }
+                break;
+            case FILES:
+                if (!isSuper){
+                    System.out.println("Unexpected request");
+                }
+                else{
+                    addChildrensFiles(incoming,requesterIp,requesterPort);
                 }
 
                 break;
@@ -378,7 +399,7 @@ public class Node extends Observable implements Observer {
 
                         //next forward the search query to children having the file
                         if (chilrensFiles.containsKey(fileKey)) {
-                            String[] peersWithFile = chilrensFiles.get(fileKey);
+                            ArrayList<String> peersWithFile = chilrensFiles.get(fileKey);
                             for (String peer : peersWithFile) {
                                 ipPort = peer.split(":");
                                 ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
