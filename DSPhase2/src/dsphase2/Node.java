@@ -381,7 +381,7 @@ public class Node extends Observable implements Observer {
 
                         //next forward the search query to children having the file
                         if (chilrensFiles.containsKey(fileKey)) {
-                            String[] peersWithFile = chilrensFiles.get(fileKey);
+                            ArrayList<String> peersWithFile = chilrensFiles.get(fileKey);
                             for (String peer : peersWithFile) {
                                 ipPort = peer.split(":");
                                 search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
