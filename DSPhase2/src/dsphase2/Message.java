@@ -65,7 +65,7 @@ public class Message {
                 for (String file : files) {
                     filesString = filesString +" "+ file;
                 }
-                message=appendLength("SEROK"+" "+noOfFiles+" "+ip+" "+port+" "+hops+" "+filesString.substring(1));
+                message=appendLength("SEROK"+" "+noOfFiles+" "+ip+" "+port+" "+hops+" "+filesString);
                 break;
         
             }
