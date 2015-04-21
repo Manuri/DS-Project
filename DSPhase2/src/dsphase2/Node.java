@@ -227,13 +227,13 @@ public class Node extends Observable implements Observer {
     private int getRandomNo(int number) {
         return (int) (Math.random() * 1000 % number);
     }
-    
-    private int getRandomNo(int number, int exception){
-        if(number==1){
+
+    private int getRandomNo(int number, int exception) {
+        if (number == 1) {
             return -1;
         }
         int value;
-        while((value=getRandomNo(number))==exception);
+        while ((value = getRandomNo(number)) == exception);
         return value;
     }
     //my files
@@ -396,13 +396,13 @@ public class Node extends Observable implements Observer {
                     //if I am a super peer, forward the search message to respective peers
                     if (isSuper) {
                         //forward the search query to a random peers
-                        
-                        int randomPeerNumer = getRandomNo(superPeers.size(),superPeers.indexOf(searcherIp + ":" + searcherPort));
-                        String[] ipPort = (superPeers.get(randomPeerNumer)).split(":");
-                        ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
 
-                        System.out.println("adding to routing table,key:" + ipPort[0] + fileKey + "   value:" + searcherIp + ":" + searcherPort);
-                        if (randomPeerNumer!=-1) {
+                        int randomPeerNumer = getRandomNo(superPeers.size(), superPeers.indexOf(searcherIp + ":" + searcherPort));
+
+                        if (randomPeerNumer != -1) {
+                            String[] ipPort = (superPeers.get(randomPeerNumer)).split(":");
+                            ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+                            System.out.println("adding to routing table,key:" + ipPort[0] + fileKey + "   value:" + searcherIp + ":" + searcherPort);
                             routingTable.put(ipPort[0] + fileKey, searcherIp + ":" + searcherPort);
                             search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                         }
