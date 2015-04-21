@@ -49,7 +49,8 @@ public class Node extends Observable implements Observer {
         this.myName = name;
         isSuper = Config.isSuper;
         joinRequestSentPeers = new HashMap<String, Integer>();
-        addMyFiles(2);
+        addMyFiles(2
+        );
         if (isSuper) {
             addChidrensFiles();
         }
