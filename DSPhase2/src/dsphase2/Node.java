@@ -270,8 +270,11 @@ public class Node extends Observable implements Observer {
          }*/
         switch (msgType) {
             case SEROK:
-                requesterIp = msg[3].trim();
-                requesterPort = Integer.parseInt(msg[4].trim());
+                String success = msg[2].trim();
+                if (!success.equals("0")) {
+                    requesterIp = msg[3].trim();
+                    requesterPort = Integer.parseInt(msg[4].trim());
+                }
                 break;
 
             case JOINOK:
