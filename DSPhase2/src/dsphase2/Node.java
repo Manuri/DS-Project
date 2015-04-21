@@ -356,7 +356,8 @@ public class Node extends Observable implements Observer {
                 System.out.println("Search message received for key:" + fileKey);
                 //check if I have the file
                 if (hopCount < Config.TTL) {
-                    if (myFiles.containsKey(fileKey.toLowerCase())) {
+                    fileKey = fileKey.toLowerCase();
+                    if (myFiles.containsKey(fileKey)) {
                         ArrayList<String> files = myFiles.get(fileKey);
                         int noOfFiles = files.size();
                         //first send the list of files to the searcher
