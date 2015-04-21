@@ -453,7 +453,7 @@ public class Node extends Observable implements Observer {
                 break;
             case SEROK:
                 String[] parts = incoming.split(" ");
-                int noOfFiles = Integer.parseInt(parts[2]);
+                int noOfFiles = Integer.parseInt(parts[2].trim());
                 switch (noOfFiles) {
                     case 0:
                         System.out.println("Files not found!");
