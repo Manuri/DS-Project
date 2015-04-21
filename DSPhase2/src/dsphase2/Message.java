@@ -49,6 +49,8 @@ public class Message {
         switch(type){
             case JOINOK: message=appendLength("JOINOK"+" "+success);
                 break;
+            case SEROK: message=appendLength("SEROK"+" "+success);
+                break;
         }
     }
     

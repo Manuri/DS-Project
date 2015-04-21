@@ -385,7 +385,9 @@ public class Node extends Observable implements Observer {
                 //check if I have the file
                 if (hopCount < Config.TTL) {
                     fileKey = fileKey.toLowerCase();
+                    boolean locatable = false;
                     if (myFiles.containsKey(fileKey)) {
+                        locatable = true;
                         ArrayList<String> files = myFiles.get(fileKey);
                         int noOfFiles = files.size();
                         //first send the list of files to the searcher
@@ -398,8 +400,9 @@ public class Node extends Observable implements Observer {
                         //forward the search query to a random peers
 
                         int randomPeerNumer = getRandomNo(superPeers.size(), superPeers.indexOf(searcherIp + ":" + searcherPort));
-                        String[] ipPort;    
+                        String[] ipPort;
                         if (randomPeerNumer != -1) {
+                            locatable = true;
                             ipPort = (superPeers.get(randomPeerNumer)).split(":");
                             ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                             System.out.println("adding to routing table,key:" + ipPort[0] + fileKey + "   value:" + searcherIp + ":" + searcherPort);
@@ -409,6 +412,7 @@ public class Node extends Observable implements Observer {
 
                         //next forward the search query to children having the file
                         if (chilrensFiles.containsKey(fileKey)) {
+                            locatable = true;
                             ArrayList<String> peersWithFile = chilrensFiles.get(fileKey);
                             for (String peer : peersWithFile) {
                                 ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
@@ -417,6 +421,12 @@ public class Node extends Observable implements Observer {
                                 search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
 
                             }
+                        }
+
+                        if (!locatable) {
+                            String response = (new Message(MessageType.SEROK, 0)).getMessage();
+                            System.out.println("Created response:" + response);
+                            sendMessage(response, searcherIp, searcherPort);
                         }
                     }
 //                    
