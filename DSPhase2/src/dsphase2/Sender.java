@@ -51,7 +51,7 @@ public class Sender {
             clientSocket.send(packet); 
             }
         catch(IOException ioe){
-            System.out.println(ioe.getMessage());
+            ioe.printStackTrace();
 	}
         return null;
     }
