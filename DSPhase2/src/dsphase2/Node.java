@@ -329,7 +329,7 @@ public class Node extends Observable implements Observer {
                 int searcherPort = Integer.parseInt(searcherIpPort[3]);
                 String fileKey = messageComponents[1];
                 int hopCount = 1;
-                if ("\"".equals(messageComponents[2])) {
+                if (!"\"".equals(messageComponents[2])) {
                     hopCount = 1 + Integer.parseInt(messageComponents[2].substring(1));
                 }
                 System.out.println("Search message received for key:" + fileKey);
