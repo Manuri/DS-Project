@@ -624,25 +624,18 @@ public class Node extends Observable implements Observer {
     private void forwardSEROKToImmediateRequester(String incoming,String senderIp) {
         
         String[] parts = incoming.split(" ");
-        int noOfFiles = Integer.parseInt(parts[2]);
-        String ipOfTheNodeWithFile, routingTableKey, key, immediateRequesterIpPort[], fileString = "";
-        int hopCount;
-        int portOfTheNodeWithFile;    
+        
+        String routingTableKey, key, immediateRequesterIpPort[];
+   
         System.out.println("Files found:");
         System.out.println(incoming);
-        ipOfTheNodeWithFile = parts[3];
-        portOfTheNodeWithFile = Integer.parseInt(parts[4].trim());
+        
         key = parts[6];
         routingTableKey = senderIp + ":" + key;        
         immediateRequesterIpPort = routingTable.get(routingTableKey).split(":");
         routingTable.remove(routingTableKey);
-        hopCount = Integer.parseInt(parts[5].trim());
-        for (int i = 7; i < parts.length; i++) {
-            fileString += parts[i];
-        }
-        String response = (new Message(MessageType.SEROK, noOfFiles, ipOfTheNodeWithFile, portOfTheNodeWithFile, hopCount, fileString)).getMessage();
-        System.out.println("Created response:" + response);
-        sendMessage(response, immediateRequesterIpPort[0], Integer.parseInt(immediateRequesterIpPort[1]));
+
+        sendMessage(incoming, immediateRequesterIpPort[0], Integer.parseInt(immediateRequesterIpPort[1]));
 
     }
 
