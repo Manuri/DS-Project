@@ -71,6 +71,18 @@ public class Message {
             }
         }
     }
+    
+        public Message(MessageType type, int noOfFiles, String ip, int port, int hops, String fileString){
+        switch(type){
+        
+            case SEROK: 
+            {
+                message=appendLength("SEROK"+" "+noOfFiles+" "+ip+" "+port+" "+hops+" "+fileString);
+                break;
+        
+            }
+        }
+    }
     public String getMessage(){
         return message;
     }
