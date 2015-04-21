@@ -221,7 +221,7 @@ public class ConfigWindow extends JFrame implements Observer {
         jButton3.setText("Search the Network");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
+                
                     //                Config.MY_IP = jTextField1.getText();
 //                Config.MY_PORT= Integer.parseInt(jTextField2.getText());
 //                Config.MY_NAME = jTextField3.getText();
@@ -237,9 +237,6 @@ public class ConfigWindow extends JFrame implements Observer {
 //                }
                     n1.search(jTextField6.getText());
 
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ConfigWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
         });
 
