@@ -392,8 +392,10 @@ public class Node extends Observable implements Observer {
                         ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
 
                         System.out.println("adding to routing table,key:" + ipPort[0] + fileKey + "   value:" + searcherIp + ":" + searcherPort);
-                        routingTable.put(ipPort[0] + fileKey, searcherIp + ":" + searcherPort);
-                        search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+                        if (!ipPort[0].equals(searcherIp)) {
+                            routingTable.put(ipPort[0] + fileKey, searcherIp + ":" + searcherPort);
+                            search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
+                        }
 
                         //next forward the search query to children having the file
                         if (chilrensFiles.containsKey(fileKey)) {
@@ -636,7 +638,7 @@ public class Node extends Observable implements Observer {
             routingTable.remove(routingTableKey);
 
             sendMessage(incoming, immediateRequesterIpPort[0], Integer.parseInt(immediateRequesterIpPort[1]));
-        }else{
+        } else {
             System.out.println("Files found");
         }
 
