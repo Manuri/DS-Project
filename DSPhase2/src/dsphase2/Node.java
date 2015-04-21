@@ -68,13 +68,13 @@ public class Node extends Observable implements Observer {
             int ipRemainder = Integer.parseInt(ipComponents[3]) % numberOfNodes;
             while ((readLine = reader.readLine()) != null) {
                 if (lineNumber % numberOfNodes == ipRemainder) {
-                    String[] terms = readLine.split(" ");
+                    String[] terms = readLine.toLowerCase().split(" ");
                     for (String term : terms) {
                         if (myFiles.containsKey(term)) {
-                            (myFiles.get(term)).add(readLine.toLowerCase());
+                            (myFiles.get(term)).add(readLine);
                         } else {
                             ArrayList<String> files = new ArrayList<String>();
-                            files.add(readLine.toLowerCase());
+                            files.add(readLine);
                             myFiles.put(term, files);
                         }
                     }
@@ -328,7 +328,7 @@ public class Node extends Observable implements Observer {
                 String searcherIp = searcherIpPort[2];
                 int searcherPort = Integer.parseInt(searcherIpPort[3]);
                 String fileKey = messageComponents[1];
-                int hopCount = 1;
+                int hopCount;
                 System.out.println("Hop count length:" + messageComponents[2].length());
                 try{
                     hopCount = 1 + Integer.parseInt(messageComponents[2].trim());
