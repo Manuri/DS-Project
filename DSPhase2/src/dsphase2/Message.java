@@ -52,8 +52,8 @@ public class Message {
         }
     }
     
-    public Message(MessageType type, String ip, int port, String fileNanme, int maxHops){
-        message=appendLength("SER"+" "+ip+" "+port+" "+fileNanme+" "+maxHops);
+    public Message(MessageType type, String ip, int port, String fileNanme, int hops){
+        message=appendLength("SER"+" "+ip+" "+port+" "+fileNanme+" "+hops);
     }
     
     public Message(MessageType type, int noOfFiles, String ip, int port, int hops, ArrayList<String> files){

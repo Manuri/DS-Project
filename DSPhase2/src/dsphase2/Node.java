@@ -49,14 +49,14 @@ public class Node extends Observable implements Observer {
         this.myName = name;
         isSuper = Config.isSuper;
         joinRequestSentPeers = new HashMap<String, Integer>();
-        addMyFiles();
+        addMyFiles(2);
         if (isSuper) {
             addChidrensFiles();
         }
         this.addObserver(Config.CONFIG_WINDOW);
     }
 
-    private void addMyFiles() {
+    private void addMyFiles(int numberOfNodes) {
 
         BufferedReader reader = null;
         try {
@@ -64,9 +64,9 @@ public class Node extends Observable implements Observer {
             String readLine = null;
             int lineNumber = 0;
             String[] ipComponents = myIp.split("\\.");
-            int ipRemainder = Integer.parseInt(ipComponents[3]) % 3;
+            int ipRemainder = Integer.parseInt(ipComponents[3]) % numberOfNodes;
             while ((readLine = reader.readLine()) != null) {
-                if (lineNumber % 3 == ipRemainder) {
+                if (lineNumber % numberOfNodes == ipRemainder) {
                     String[] terms = readLine.split(" ");
                     for (String term : terms) {
                         if (myFiles.containsKey(term)) {
