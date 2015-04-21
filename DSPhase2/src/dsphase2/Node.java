@@ -329,9 +329,10 @@ public class Node extends Observable implements Observer {
                 int searcherPort = Integer.parseInt(searcherIpPort[3]);
                 String fileKey = messageComponents[1];
                 int hopCount = 1;
+                System.out.println("Hop count:" + messageComponents[2]);
                 if ("\"".equals(messageComponents[2])) {
                 } else {
-                    hopCount = 1 + Integer.parseInt(messageComponents[2].substring(1));
+                    hopCount = 1 + Integer.parseInt(messageComponents[2].trim());
                 }
                 System.out.println("Search message received for key:" + fileKey);
                 //check if I have the file
@@ -494,7 +495,6 @@ public class Node extends Observable implements Observer {
         if (isSuper) {
             int noOfSuperPeers = superPeers.size();
             int randomSuperPeer = getRandomNo(noOfSuperPeers);
-            System.out.println("Selected random index for the super peer: " + randomSuperPeer);
             System.out.println("Selected super peer to send search message: " + superPeers.get(randomSuperPeer));
             ipPort = (superPeers.get(randomSuperPeer)).split(":");
         } else {
