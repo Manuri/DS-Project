@@ -634,8 +634,9 @@ public class Node extends Observable implements Observer {
         ipOfTheNodeWithFile = parts[3];
         portOfTheNodeWithFile = Integer.parseInt(parts[4].trim());
         key = parts[6];
-        routingTableKey = senderIp + ":" + key;
+        routingTableKey = senderIp + ":" + key;        
         immediateRequesterIpPort = routingTable.get(routingTableKey).split(":");
+        routingTable.remove(routingTableKey);
         hopCount = Integer.parseInt(parts[5].trim());
         for (int i = 7; i < parts.length; i++) {
             fileString += parts[i];
