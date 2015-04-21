@@ -57,7 +57,7 @@ public class ConfigWindow extends JFrame implements Observer {
 
         this.setResizable(false);
 
-        n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
+        
     }
 
     @Override
@@ -203,7 +203,7 @@ public class ConfigWindow extends JFrame implements Observer {
 //                if(jRadioButton3.isSelected()){
 //                    isWebServices = true; 
 //                }
-
+                    n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
                     n1.start();
                     Thread.sleep(2000);
                     //n1.search("Harry");
