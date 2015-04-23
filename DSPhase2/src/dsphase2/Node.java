@@ -65,10 +65,12 @@ public class Node extends Observable implements Observer {
             int lineNumber = 0;
             String[] ipComponents = myIp.split("\\.");
             int ipRemainder = Config.myNodeNumber;
+            UpdateTheLog("Adding my files");
             while ((readLine = reader.readLine()) != null) {
                 if (lineNumber % numberOfNodes == ipRemainder) {
                     String[] terms = readLine.toLowerCase().split(" ");
                     String fileName = readLine.replace(" ", "_");
+                    UpdateTheLog(fileName);
                     for (String term : terms) {
                         if (myFiles.containsKey(term)) {
                             (myFiles.get(term)).add(fileName);
