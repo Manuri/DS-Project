@@ -24,6 +24,8 @@ public class Message {
                 break;
             case JOINOK: message=appendLength("JOINOK"+" "+0);
                 break;
+            case FILES:
+                message = appendLength("FILES"+" "+ip+" "+port+" "+name);
             case SER:
             {
                 String fileName = name;
