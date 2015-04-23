@@ -52,7 +52,7 @@ public class Node extends Observable implements Observer {
         this.myName = name;
         isSuper = Config.isSuper;
         joinRequestSentPeers = new HashMap<>();
-        addMyFiles(Config.noOfNodes);
+        addMyFiles(4);
         this.addObserver(Config.CONFIG_WINDOW);
     }
 
