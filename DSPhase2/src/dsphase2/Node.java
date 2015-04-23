@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
@@ -70,14 +71,18 @@ public class Node extends Observable implements Observer {
                     String[] terms = readLine.toLowerCase().split(" ");
                     String fileName = readLine.replace(" ", "_");
                     UpdateTheLog(fileName);
+                    String previousTerm;
+                    int count = 0;
+                    int fileNameSize = terms.length;
+                    if (fileNameSize > 2){
+                        addTermFile(readLine.toLowerCase(), fileName);
+                    }
                     for (String term : terms) {
-                        if (myFiles.containsKey(term)) {
-                            (myFiles.get(term)).add(fileName);
-                        } else {
-                            ArrayList<String> files = new ArrayList<>();
-                            files.add(fileName);
-                            myFiles.put(term, files);
+                        addTermFile(term, fileName);
+                        if (count > 0){
+                            addTermFile(terms[count-1] + " " + term, fileName);
                         }
+                        count ++;
                     }
                 }
                 lineNumber++;
@@ -95,6 +100,16 @@ public class Node extends Observable implements Observer {
             }
 
             System.out.println(myFiles);
+        }
+    }
+
+    private void addTermFile(String term, String fileName) {
+        if (myFiles.containsKey(term)) {
+            (myFiles.get(term)).add(fileName);
+        } else {
+            ArrayList<String> files = new ArrayList<>();
+            files.add(fileName);
+            myFiles.put(term, files);
         }
     }
 
@@ -137,7 +152,7 @@ public class Node extends Observable implements Observer {
         String noOfNodes = splitted[2];
         Config.myNodeNumber = Integer.parseInt(noOfNodes.trim());
         Config.noOfNodes = Config.myNodeNumber + 1;
-        
+
         String[] peerIps;
         int[] peerPorts;
 
@@ -146,7 +161,7 @@ public class Node extends Observable implements Observer {
         switch (noOfNodes.trim()) {
             case "0":
                 isSuper = true;
-                 addMyFiles(4);
+                addMyFiles(4);
                 return new RegisterResponse(MessageType.REG_SUCCESS, null, null);
             // break;
             case "1":
@@ -190,7 +205,7 @@ public class Node extends Observable implements Observer {
                     peerPorts[i - 1] = Integer.parseInt(splitted[3 * i + 1]);
                     System.out.println(peerIps[i - 1] + "," + peerPorts[i - 1]);
                 }
-                 addMyFiles(4);
+                addMyFiles(4);
                 return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
 
         }
@@ -402,6 +417,7 @@ public class Node extends Observable implements Observer {
                         System.out.println("Created response:" + response);
                         sendMessage(response, searcherIp, searcherPort);
                     }
+                    
                     //if I am a super peer, forward the search message to respective peers
                     if (isSuper) {
                         //forward the search query to a random peers
@@ -412,17 +428,16 @@ public class Node extends Observable implements Observer {
                             locatable = true;
                             ipPort = (superPeers.get(randomPeerNumer)).split(":");
                             ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
-                            System.out.println("adding to routing table,key:" + ipPort[0] + fileKey + "   value:" + searcherIp + ":" + searcherPort);
+                            System.out.println("adding to routing table,key:" + ipPort[0] + fileKey + " value:" + searcherIp + ":" + searcherPort);
                             routingTable.put(ipPort[0] + fileKey, searcherIp + ":" + searcherPort);
                             search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                         }
 
                         //next forward the search query to children having the file
-                        if (chilrensFiles.containsKey(fileKey)) {
+                        if (chilrensFiles.keySet().contains(fileKey)) {
                             locatable = true;
                             ArrayList<String> peersWithFile = chilrensFiles.get(fileKey);
                             for (String peer : peersWithFile) {
-                                ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                                 ipPort = peer.split(":");
                                 routingTable.put(ipPort[0] + fileKey, searcherIp + ":" + searcherPort);
                                 search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
@@ -498,6 +513,41 @@ public class Node extends Observable implements Observer {
         }
 
     }
+    
+//    private boolean isInKeySet(String keyWords, Set<String> keySet){
+//        if (!keyWords.contains(" ")){
+//            return keySet.contains(keyWords);
+//        }
+//        else{
+//            String[] seperatedKeys = keyWords.split(" ");
+//            int count;
+//            int length = seperatedKeys.length;
+//            boolean byWordMissing = false;
+//            String previousKey = seperatedKeys[0];
+//            for (count = 1;count < length; count++){
+//                if (!keySet.contains(seperatedKeys[count - 1] + " " + seperatedKeys[count])){
+//                    return false;
+//                }
+//            }
+//            return true;
+//        }
+//    }
+    
+//    private ArrayList<String> getValuesFromKeySet(String keyWords, HashMap<String,ArrayList<String>> valueSet){
+//        if (!keyWords.contains(" ")){
+//            return valueSet.get(keyWords);
+//        }
+//        String[] seperatedWords = keyWords.split(" ");
+//        int noOfWords = seperatedWords.length;
+//        int count;
+//        Set<String> values = new HashSet<>();
+//        String previousWord = seperatedWords[0];
+//        for (count = 1 ; count < noOfWords ; count++){
+//            String byWord = seperatedWords[count - 1] + " " + seperatedWords[count];
+//            
+//        }
+//        return (ArrayList<String>) values;
+//    }
 
     public void start() {
 
