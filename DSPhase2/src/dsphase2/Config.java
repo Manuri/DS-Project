@@ -38,7 +38,9 @@ public class Config {
 
     static  String BOOTSTRAP_IP = "10.8.108.169";
 
-
+    static int noOfNodes = 1;
+    static int myNodeNumber = 0;
+    
     static  int BOOTSTRAP_PORT =  9876;
     static ArrayList<String> availableFiles = new ArrayList<>(); 
    

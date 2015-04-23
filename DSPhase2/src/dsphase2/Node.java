@@ -134,6 +134,9 @@ public class Node extends Observable implements Observer {
         String[] splitted = response.split(" ");
 
         String noOfNodes = splitted[2];
+        Config.myNodeNumber = Integer.parseInt(noOfNodes.trim());
+        Config.noOfNodes = Config.myNodeNumber + 1;
+        
         String[] peerIps;
         int[] peerPorts;
 
