@@ -28,12 +28,12 @@ public class Config {
     
     static ConfigWindow CONFIG_WINDOW; 
     
-    static  String MY_IP = "10.8.108.169";
+    static  String MY_IP = "10.8.108.38";
 
     static  int MY_PORT = 5002;
 
-    static  String MY_NAME = "Sasikala";
-    static  boolean isSuper = true;
+    static  String MY_NAME = "Keshani";
+    static  boolean isSuper = false;
     static boolean isWebService;
     
 

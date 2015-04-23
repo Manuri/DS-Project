@@ -363,8 +363,8 @@ public class Node extends Observable implements Observer {
                     while (iterator.hasNext()) {
                         myTerms = "," + (String) iterator.next();
                     }
-                    outGoingMessage = new Message(MessageType.FILES, myIp, myPort, myTerms.substring(1)).getMessage();
-                    sendMessage(outGoingMessage, requesterIp, requesterPort);
+                    outGoingMessage = (new Message(MessageType.FILES, myIp, myPort, myTerms.substring(1))).getMessage();
+                    sendMessage(outGoingMessage, joinedPeerIp, joinedPeerPort);
                 }
                 break;
             case FILES:
