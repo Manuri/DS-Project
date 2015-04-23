@@ -194,19 +194,26 @@ public class ConfigWindow extends JFrame implements Observer {
                 Config.MY_NAME = jTextField3.getText();
                 Config.BOOTSTRAP_IP = jTextField4.getText();
                 Config.BOOTSTRAP_PORT = Integer.parseInt(jTextField5.getText());
-                boolean isSuper = false;
+                Config.isSuper = false;                
                 boolean isWebServices = false;
                 if (jRadioButton1.isSelected()) {
-                    isSuper = true;
+                    Config.isSuper = true;
                 }
+                Config.isWebService = false;
                 if (jRadioButton3.isSelected()) {
-                    isWebServices = true;
+                    Config.isWebService = true;
                 }
                 n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
                 n1.start();
 
             }
         });
+        
+        jTextField1.setText(Config.MY_IP);
+        jTextField2.setText(Integer.toString(Config.MY_PORT));
+        jTextField3.setText(Config.MY_NAME);
+        jTextField4.setText(Config.BOOTSTRAP_IP);
+        jTextField5.setText(Integer.toString(Config.BOOTSTRAP_PORT));
 
         jButton2.setText("Leave the Network");
 

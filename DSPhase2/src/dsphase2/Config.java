@@ -34,6 +34,7 @@ public class Config {
 
     static  String MY_NAME = "Sasikala";
     static  boolean isSuper = true;
+    static boolean isWebService;
     
 
     static  String BOOTSTRAP_IP = "10.8.108.169";
