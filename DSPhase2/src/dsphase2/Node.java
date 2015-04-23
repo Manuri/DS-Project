@@ -52,7 +52,7 @@ public class Node extends Observable implements Observer {
         this.myName = name;
         isSuper = Config.isSuper;
         joinRequestSentPeers = new HashMap<>();
-        addMyFiles(4);
+        //addMyFiles(4);
         this.addObserver(Config.CONFIG_WINDOW);
     }
 
@@ -63,7 +63,6 @@ public class Node extends Observable implements Observer {
             reader = new BufferedReader(new FileReader(new File("src/resources/FileNames")));
             String readLine = null;
             int lineNumber = 0;
-            String[] ipComponents = myIp.split("\\.");
             int ipRemainder = Config.myNodeNumber;
             UpdateTheLog("Adding my files");
             while ((readLine = reader.readLine()) != null) {
@@ -147,6 +146,7 @@ public class Node extends Observable implements Observer {
         switch (noOfNodes.trim()) {
             case "0":
                 isSuper = true;
+                 addMyFiles(4);
                 return new RegisterResponse(MessageType.REG_SUCCESS, null, null);
             // break;
             case "1":
@@ -155,6 +155,7 @@ public class Node extends Observable implements Observer {
                 peerPorts = new int[1];
                 peerIps[0] = splitted[3];
                 peerPorts[0] = Integer.parseInt(splitted[4]);
+                addMyFiles(4);
                 //  System.out.println(joinNetwork(peerIps[0], peerPorts[0]));
                 return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
             //  break;
@@ -189,7 +190,7 @@ public class Node extends Observable implements Observer {
                     peerPorts[i - 1] = Integer.parseInt(splitted[3 * i + 1]);
                     System.out.println(peerIps[i - 1] + "," + peerPorts[i - 1]);
                 }
-
+                 addMyFiles(4);
                 return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
 
         }
