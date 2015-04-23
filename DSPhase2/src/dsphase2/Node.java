@@ -52,7 +52,7 @@ public class Node extends Observable implements Observer {
         this.myName = name;
         isSuper = Config.isSuper;
         joinRequestSentPeers = new HashMap<>();
-        addMyFiles(2);
+        addMyFiles(Config.noOfNodes);
         this.addObserver(Config.CONFIG_WINDOW);
     }
 
@@ -64,7 +64,7 @@ public class Node extends Observable implements Observer {
             String readLine = null;
             int lineNumber = 0;
             String[] ipComponents = myIp.split("\\.");
-            int ipRemainder = Integer.parseInt(ipComponents[3]) % numberOfNodes;
+            int ipRemainder = Config.myNodeNumber;
             while ((readLine = reader.readLine()) != null) {
                 if (lineNumber % numberOfNodes == ipRemainder) {
                     String[] terms = readLine.toLowerCase().split(" ");
