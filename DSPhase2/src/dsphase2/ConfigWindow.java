@@ -57,7 +57,6 @@ public class ConfigWindow extends JFrame implements Observer {
 
         this.setResizable(false);
 
-        
     }
 
     @Override
@@ -189,27 +188,23 @@ public class ConfigWindow extends JFrame implements Observer {
         jButton1.setText("Join the Network");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    //                Config.MY_IP = jTextField1.getText();
-//                Config.MY_PORT= Integer.parseInt(jTextField2.getText());
-//                Config.MY_NAME = jTextField3.getText();
-//                Config.BOOTSTRAP_IP= jTextField4.getText();
-//                Config.BOOTSTRAP_PORT= Integer.parseInt(jTextField5.getText()); 
-//                boolean isSuper = false;
-//                boolean isWebServices = false; 
-//                if(jRadioButton1.isSelected()){
-//                    isSuper = true; 
-//                }
-//                if(jRadioButton3.isSelected()){
-//                    isWebServices = true; 
-//                }
-                    n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
-                    n1.start();
-                    Thread.sleep(2000);
-                    //n1.search("Harry");
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ConfigWindow.class.getName()).log(Level.SEVERE, null, ex);
+
+                Config.MY_IP = jTextField1.getText();
+                Config.MY_PORT = Integer.parseInt(jTextField2.getText());
+                Config.MY_NAME = jTextField3.getText();
+                Config.BOOTSTRAP_IP = jTextField4.getText();
+                Config.BOOTSTRAP_PORT = Integer.parseInt(jTextField5.getText());
+                boolean isSuper = false;
+                boolean isWebServices = false;
+                if (jRadioButton1.isSelected()) {
+                    isSuper = true;
                 }
+                if (jRadioButton3.isSelected()) {
+                    isWebServices = true;
+                }
+                n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
+                n1.start();
+
             }
         });
 
@@ -221,21 +216,8 @@ public class ConfigWindow extends JFrame implements Observer {
         jButton3.setText("Search the Network");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                
-                    //                Config.MY_IP = jTextField1.getText();
-//                Config.MY_PORT= Integer.parseInt(jTextField2.getText());
-//                Config.MY_NAME = jTextField3.getText();
-//                Config.BOOTSTRAP_IP= jTextField4.getText();
-//                Config.BOOTSTRAP_PORT= Integer.parseInt(jTextField5.getText()); 
-//                boolean isSuper = false;
-//                boolean isWebServices = false; 
-//                if(jRadioButton1.isSelected()){
-//                    isSuper = true; 
-//                }
-//                if(jRadioButton3.isSelected()){
-//                    isWebServices = true; 
-//                }
-                    n1.search(jTextField6.getText());
+
+                n1.search(jTextField6.getText());
 
             }
         });
