@@ -40,7 +40,7 @@ public class Node extends Observable implements Observer {
     private int inquireResponses;
     //private final Sender com;
 
-    private HashMap<String, Integer> joinRequestSentPeers;
+   // private HashMap<String, Integer> joinRequestSentPeers;
 
     public static Node getInstance(String ip, int port, String name) {
         if (instance == null) {
@@ -54,7 +54,7 @@ public class Node extends Observable implements Observer {
         this.myPort = port;
         this.myName = name;
         isSuper = Config.isSuper;
-        joinRequestSentPeers = new HashMap<>();
+       // joinRequestSentPeers = new HashMap<>();
         //addMyFiles(4);
         this.addObserver(Config.CONFIG_WINDOW);
     }
@@ -73,14 +73,18 @@ public class Node extends Observable implements Observer {
                     String[] terms = readLine.toLowerCase().split(" ");
                     String fileName = readLine.replace(" ", "_");
                     UpdateTheLog(fileName);
+                    String previousTerm;
+                    int count = 0;
+                    int fileNameSize = terms.length;
+                    if (fileNameSize > 2) {
+                        addTermFile(readLine.toLowerCase(), fileName);
+                    }
                     for (String term : terms) {
-                        if (myFiles.containsKey(term)) {
-                            (myFiles.get(term)).add(fileName);
-                        } else {
-                            ArrayList<String> files = new ArrayList<>();
-                            files.add(fileName);
-                            myFiles.put(term, files);
+                        addTermFile(term, fileName);
+                        if (count > 0) {
+                            addTermFile(terms[count - 1] + " " + term, fileName);
                         }
+                        count++;
                     }
                 }
                 lineNumber++;
@@ -98,6 +102,16 @@ public class Node extends Observable implements Observer {
             }
 
             System.out.println(myFiles);
+        }
+    }
+
+    private void addTermFile(String term, String fileName) {
+        if (myFiles.containsKey(term)) {
+            (myFiles.get(term)).add(fileName);
+        } else {
+            ArrayList<String> files = new ArrayList<>();
+            files.add(fileName);
+            myFiles.put(term, files);
         }
     }
 
@@ -269,9 +283,6 @@ public class Node extends Observable implements Observer {
                 }
                 break;
 
-            case JOINOK:
-                break;
-
             default:
                 requesterIp = msg[2].trim();
                 requesterPort = Integer.parseInt(msg[3].trim());
@@ -320,10 +331,25 @@ public class Node extends Observable implements Observer {
                 break;
             //for join resp length JOINOK value
             case JOINOK:
-                String joinedPeerIp = receivedMessage.getIpAddress();
-                int joinedPeerPort = joinRequestSentPeers.get(joinedPeerIp);
-                joinRequestSentPeers.remove(joinedPeerIp);
-                info = joinedPeerIp + ":" + joinedPeerPort;
+
+                /*value = msg[2].trim();
+                 if (value.equals("0")) {
+                 info = receivedMessage.getIpAddress() + ":" + receivedMessage.getPort();
+                 if (isSuper) {
+                 String superPeer = info;
+                 superPeers.add(superPeer);
+                 System.out.println("Added peer super node: " + info);
+                 } else {
+                 mySuperNode = info;
+                 System.out.println("Added my super node: " + info);
+                 }
+                 }else if(value.equals("9999")){
+                 System.out.println("joining was unsuccessful");*/
+                //String joinedPeerIp = receivedMessage.getIpAddress();
+                //int joinedPeerPort = joinRequestSentPeers.get(joinedPeerIp);
+                //joinRequestSentPeers.remove(joinedPeerIp);
+                info = requesterIp + ":" + requesterPort;
+                
                 if (isSuper) {
                     String superPeer = info;
                     superPeers.add(superPeer);
@@ -341,7 +367,7 @@ public class Node extends Observable implements Observer {
                         myTerms += "," + key;
                     }
                     outGoingMessage = (new Message(MessageType.FILES, myIp, myPort, myTerms.substring(1))).getMessage();
-                    sendMessage(outGoingMessage, joinedPeerIp, joinedPeerPort);
+                    sendMessage(outGoingMessage, requesterIp, requesterPort);
                 }
                 break;
             case FILES:
@@ -380,6 +406,7 @@ public class Node extends Observable implements Observer {
                         //System.out.println("Created response:" + response);
                         sendMessage(response, searcherIp, searcherPort);
                     }
+
                     //if I am a super peer, forward the search message to respective peers
                     boolean isSearcherAChild=false;
                     if(childNodes.contains(searcherIp + ":" + searcherPort)){
@@ -406,6 +433,7 @@ public class Node extends Observable implements Observer {
                             innerSet.add(searcherIp + ":" + searcherPort);
 
                             routingTable.put(ipPort[0] + ipPort[1] + fileKey, innerSet);
+
                             search(fileKey, myIp, myPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                         }
 
@@ -418,7 +446,6 @@ public class Node extends Observable implements Observer {
                             locatable = true;
                             ArrayList<String> peersWithFile = chilrensFiles.get(fileKey);
                             for (String peer : peersWithFile) {
-                                ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                                 ipPort = peer.split(":");
                                // System.out.println("my child has:"+peer);
                                 if (routingTable.containsKey(ipPort[0] + ipPort[1] + fileKey)) {
@@ -478,28 +505,90 @@ public class Node extends Observable implements Observer {
                 }
                 break;
             case LEAVE:
-                incoming = (String) arg;
                 int length = msg.length;
                 //if its just a child asking to leave, remove him from the childNodes list 
                 //and remove all file names from the super node which were in the leaving node but not in any other children
                 if ("CHILD-LEAVING".equals(msg[length].trim())) {
                     //TO-DO: need to remove all file names from the super node which were in the leaving node but not in any other children
-
-                    childNodes.remove(msg[2].trim() + ":" + msg[3].trim());
-                } //if it is a super node that is leaving, take the ip and port it sends and send an INQUIRE message to it asking to connect
+                    String leavingChild = msg[2].trim() + ":" + msg[3].trim();
+                    Set<String> terms = chilrensFiles.keySet();
+                    Iterator<String> iterator = terms.iterator();
+                    while(iterator.hasNext()){
+                        String currentTerm = iterator.next();
+                        ArrayList<String> children = chilrensFiles.get(currentTerm);
+                        if (children.contains(leavingChild)){
+                            if (children.size() == 1){
+                                chilrensFiles.remove(currentTerm);
+                            }
+                            else{
+                                children.remove(leavingChild);
+                            }
+                        }
+                    }
+                    childNodes.remove(leavingChild);
+                    outGoingMessage = (new Message(MessageType.LEAVEOK,myIp,myPort)).getMessage();
+                    sendMessage(outGoingMessage, requesterIp, requesterPort);
+                }
+                // if is is a super node that is leaving and if it doesn't have two peers
+                //this will only be sent to children
+                //I have to become a superchild
+                else if (length == 3){
+                    Config.isSuper = true;
+                    isSuper = true;                   
+                    outGoingMessage = (new Message(MessageType.LEAVEOK,myIp,myPort)).getMessage();
+                    sendMessage(outGoingMessage, requesterIp, requesterPort);
+                }
+                //if it is a super node that is leaving, take the ip and port it sends and send an INQUIRE message to it asking to connect
                 else {
+                    outGoingMessage = (new Message(MessageType.LEAVEOK,myIp,myPort)).getMessage();
+                    sendMessage(outGoingMessage, requesterIp, requesterPort);
                     String[] ipPort = msg[length].split(":");
-                    outGoingMessage = (new Message(MessageType.INQUIRE, myIp, myPort, "")).getMessage();
-                    sendMessage(outGoingMessage, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+                    outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, "")).getMessage();
+                    sendMessage(outGoingMessage, ipPort[0], Integer.parseInt(ipPort[1]));
                 }
 
             case LEAVEOK:
-                break;
+                System.out.println("Peer "+ myName + " is leaving...");
+                System.exit(0);
+                
 
         }
 
     }
 
+//    private boolean isInKeySet(String keyWords, Set<String> keySet){
+//        if (!keyWords.contains(" ")){
+//            return keySet.contains(keyWords);
+//        }
+//        else{
+//            String[] seperatedKeys = keyWords.split(" ");
+//            int count;
+//            int length = seperatedKeys.length;
+//            boolean byWordMissing = false;
+//            String previousKey = seperatedKeys[0];
+//            for (count = 1;count < length; count++){
+//                if (!keySet.contains(seperatedKeys[count - 1] + " " + seperatedKeys[count])){
+//                    return false;
+//                }
+//            }
+//            return true;
+//        }
+//    }
+//    private ArrayList<String> getValuesFromKeySet(String keyWords, HashMap<String,ArrayList<String>> valueSet){
+//        if (!keyWords.contains(" ")){
+//            return valueSet.get(keyWords);
+//        }
+//        String[] seperatedWords = keyWords.split(" ");
+//        int noOfWords = seperatedWords.length;
+//        int count;
+//        Set<String> values = new HashSet<>();
+//        String previousWord = seperatedWords[0];
+//        for (count = 1 ; count < noOfWords ; count++){
+//            String byWord = seperatedWords[count - 1] + " " + seperatedWords[count];
+//            
+//        }
+//        return (ArrayList<String>) values;
+//    }
     public void start() {
 
         RegisterResponse response = register();
@@ -618,34 +707,57 @@ public class Node extends Observable implements Observer {
         if (isSuper) {
             //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
             int noOfPeers = superPeers.size();
-            for (int i = 0; i < noOfPeers; i++) {
-                ipPort = superPeers.get(i).split(":");
-                if (i < noOfPeers / 2) {
-                    //if the index of the super peer in the super peer array list is < length/2 then direct him to join (i+1)th super peer
-                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i + 1))).getMessage();
-                } else {
-                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i - 1))).getMessage();
+            if (noOfPeers == 1) {
+                //select one of my children to be a super peer
+                int noOfchildren = childNodes.size();
+                int randomChildNo = getRandomNo(noOfchildren - 1);
+                message = (new Message(MessageType.LEAVE, myIp, myPort)).getMessage();
+                String[] childIpPort = childNodes.get(randomChildNo).split(":");
+                String newSuperChild = childNodes.get(randomChildNo);
+                sendMessage(message, childIpPort[0], Integer.parseInt(childIpPort[1]));
+                for (int i = 0; i < randomChildNo; i++) {
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, newSuperChild)).getMessage();
+                    ipPort = childNodes.get(i).split(":");
+                    sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
                 }
-                sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
-            }
+                for (int i = randomChildNo; i < noOfchildren; i++) {
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, newSuperChild)).getMessage();
+                    ipPort = childNodes.get(i).split(":");
+                    sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+                }
 
-            //send messages to all children saying I am leaving and give them the ip and port of a super peer to connect with
-            int noOfChildren = childNodes.size();
-            for (int i = 0; i < noOfChildren; i++) {
-                ipPort = childNodes.get(i).split(":");
-                if (i <= noOfPeers) {
-                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i))).getMessage();
-                } else {
-                    message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i - noOfPeers))).getMessage();
+                //inform the onlt peer about the newly promoted child
+                message = (new Message(MessageType.LEAVE, myIp, myPort, newSuperChild)).getMessage();
+                ipPort = superPeers.get(0).split(":");
+                sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
+
+            } else {
+                for (int i = 0; i < noOfPeers; i++) {
+                    ipPort = superPeers.get(i).split(":");
+                    if (i < noOfPeers / 2) {
+                        //if the index of the super peer in the super peer array list is < length/2 then direct him to join (i+1)th super peer
+                        message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i + 1))).getMessage();
+                    } else {
+                        message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i - 1))).getMessage();
+                    }
+                    sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
                 }
-                sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+
+                //send messages to all children saying I am leaving and give them the ip and port of a super peer to connect with
+                int noOfChildren = childNodes.size();
+                for (int i = 0; i < noOfChildren; i++) {
+                    ipPort = childNodes.get(i).split(":");
+                    String randomSuperNode = superPeers.get(getRandomNo(noOfPeers));
+                    message = (new Message(MessageType.LEAVE, myIp, myPort, randomSuperNode)).getMessage();
+                    sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
+                }
             }
         } //if I am not a super Node then just tell the super peer that I am leaving
         else {
             ipPort = mySuperNode.split(":");
             //just pass null to show that I am a normal node
             message = (new Message(MessageType.LEAVE, myIp, myPort, null)).getMessage();
-            sendMessage(message, ipPort[0].trim(), Integer.parseInt(ipPort[1].trim()));
+            sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
         }
     }
 

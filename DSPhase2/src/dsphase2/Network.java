@@ -14,7 +14,7 @@ import javax.swing.UIManager;
 public class Network implements Runnable {
 
         
-    static ConfigWindow configWindow; 
+    static ConfigWindow configWindow;
     @Override
     public void run() {
                  //When configured as normal node
