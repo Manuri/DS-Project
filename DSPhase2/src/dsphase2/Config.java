@@ -34,7 +34,7 @@ public class Config {
 
     static  String MY_NAME = "S";
     static  boolean isSuper = false;
-    static boolean isWebService;
+    static boolean isWebService=false;
     
 
     static  String BOOTSTRAP_IP = "127.0.0.1";
