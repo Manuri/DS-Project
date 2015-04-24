@@ -52,8 +52,17 @@ public class Message {
         switch(type){
             case JOINOK: message=appendLength("JOINOK"+" "+success);
                 break;
-            case SEROK: message=appendLength("SEROK"+" "+success);
-                break;
+//            case SEROK: message=appendLength("SEROK"+" "+success);
+//                break;
+        }
+    }
+    
+    //public Message(MessageType type,String searchKey){
+    public Message(MessageType type,String searchKey,String intermediateIp,int intermediatePort){
+        switch(type){
+            //case SEROK: message=appendLength("SEROK"+" "+"0"+" "+searchKey);
+            case SEROK: message=appendLength("SEROK"+" "+"0"+" "+searchKey+" "+intermediateIp+" "+intermediatePort);
+                break;        
         }
     }
     
@@ -65,7 +74,9 @@ public class Message {
         }
     }
     
-    public Message(MessageType type, int noOfFiles, String ip, int port, int hops, ArrayList<String> files, String fileKey){
+  //  public Message(MessageType type, int noOfFiles, String fileDestinationIp, int fileDestinationPort, int hops, ArrayList<String> files, String fileKey){
+        public Message(MessageType type, int noOfFiles, String fileDestinationIp, int fileDestinationPort, int hops, ArrayList<String> files, String fileKey,String intermediateIp,int intermediatePort){
+
         switch(type){
         
             case SEROK: 
@@ -74,19 +85,20 @@ public class Message {
                 for (String file : files) {
                     filesString = filesString +" "+ file;
                 }
-                message=appendLength("SEROK"+" "+noOfFiles+" "+ip+" "+port+" "+hops+" "+filesString);
+                //message=appendLength("SEROK"+" "+noOfFiles+" "+fileDestinationIp+" "+fileDestinationPort+" "+hops+" "+filesString);
+                message=appendLength("SEROK"+" "+noOfFiles+" "+fileDestinationIp+" "+fileDestinationPort+" "+hops+" "+filesString+" "+intermediateIp+" "+intermediatePort);
                 break;
         
             }
         }
     }
     
-        public Message(MessageType type, int noOfFiles, String ip, int port, int hops, String fileString){
+        public Message(MessageType type, int noOfFiles, String fileDestinationIp, int fileDestinationPort, int hops, String fileString,String intermediateIp,int intermediatePort){
         switch(type){
         
             case SEROK: 
             {
-                message=appendLength("SEROK"+" "+noOfFiles+" "+ip+" "+port+" "+hops+" "+fileString);
+                message=appendLength("SEROK"+" "+noOfFiles+" "+fileDestinationIp+" "+fileDestinationPort+" "+hops+" "+fileString+" "+intermediateIp+" "+intermediatePort);
                 break;
         
             }

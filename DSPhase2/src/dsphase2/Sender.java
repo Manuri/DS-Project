@@ -47,8 +47,9 @@ public class Sender {
             byte[] toSend  = message.getBytes(); 
 		  
             DatagramPacket packet =new DatagramPacket(toSend, toSend.length, IPAddress, peerPort); 
-		    
-            clientSocket.send(packet); 
+            System.out.println("sending message:"+message+"\nfrom-"+Config.MY_IP+":"+Config.MY_PORT+",to-"+peerIp+":"+peerPort);
+            clientSocket.send(packet);
+            
             }
         catch(IOException ioe){
             ioe.printStackTrace();
@@ -57,7 +58,7 @@ public class Sender {
     }
     
     public String sendTCPMessage(String sentence){
-        System.out.println("inside send message"+sentence);
+        //System.out.println("inside send message"+sentence);
         
         Socket clientSocket = null;
         PrintWriter outToServer=null;
@@ -75,7 +76,7 @@ public class Sender {
            buf=new char[10000];
 
             inFromServer.read(buf);
-            System.out.println(buf); 
+            //System.out.println(buf); 
         }
         catch(UnknownHostException e){
             System.out.println(e.getMessage());
