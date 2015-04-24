@@ -38,7 +38,7 @@ public class Node extends Observable implements Observer {
     private int inquireResponses;
     //private final Sender com;
 
-    private HashMap<String, Integer> joinRequestSentPeers;
+   // private HashMap<String, Integer> joinRequestSentPeers;
 
     public static Node getInstance(String ip, int port, String name) {
         if (instance == null) {
@@ -52,7 +52,7 @@ public class Node extends Observable implements Observer {
         this.myPort = port;
         this.myName = name;
         isSuper = Config.isSuper;
-        joinRequestSentPeers = new HashMap<>();
+       // joinRequestSentPeers = new HashMap<>();
         //addMyFiles(4);
         this.addObserver(Config.CONFIG_WINDOW);
     }
@@ -297,9 +297,6 @@ public class Node extends Observable implements Observer {
                 }
                 break;
 
-            case JOINOK:
-                break;
-
             default:
                 requesterIp = msg[2].trim();
                 requesterPort = Integer.parseInt(msg[3].trim());
@@ -331,7 +328,7 @@ public class Node extends Observable implements Observer {
                 outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, name)).getMessage();
                 sendMessage(outGoingMessage, requesterIp, requesterPort);
 
-                joinRequestSentPeers.put(requesterIp, requesterPort);
+                //joinRequestSentPeers.put(requesterIp, requesterPort);
                 break;
             // for join req : <length JOIN IP_address port_no>
             case JOIN:
@@ -360,10 +357,10 @@ public class Node extends Observable implements Observer {
                  }
                  }else if(value.equals("9999")){
                  System.out.println("joining was unsuccessful");*/
-                String joinedPeerIp = receivedMessage.getIpAddress();
-                int joinedPeerPort = joinRequestSentPeers.get(joinedPeerIp);
-                joinRequestSentPeers.remove(joinedPeerIp);
-                info = joinedPeerIp.trim() + ":" + String.valueOf(joinedPeerPort).trim();
+                //String joinedPeerIp = receivedMessage.getIpAddress();
+                //int joinedPeerPort = joinRequestSentPeers.get(joinedPeerIp);
+                //joinRequestSentPeers.remove(joinedPeerIp);
+                info = requesterIp + ":" + requesterPort;
                 if (isSuper) {
                     String superPeer = info;
                     superPeers.add(superPeer);
@@ -379,7 +376,7 @@ public class Node extends Observable implements Observer {
                         myTerms = "," + (String) iterator.next();
                     }
                     outGoingMessage = (new Message(MessageType.FILES, myIp, myPort, myTerms.substring(1))).getMessage();
-                    sendMessage(outGoingMessage, joinedPeerIp, joinedPeerPort);
+                    sendMessage(outGoingMessage, requesterIp, requesterPort);
                 }
                 break;
             case FILES:
@@ -492,7 +489,6 @@ public class Node extends Observable implements Observer {
                 }
                 break;
             case LEAVE:
-                incoming = (String) arg;
                 int length = msg.length;
                 //if its just a child asking to leave, remove him from the childNodes list 
                 //and remove all file names from the super node which were in the leaving node but not in any other children

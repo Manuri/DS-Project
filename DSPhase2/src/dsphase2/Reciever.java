@@ -51,9 +51,7 @@ public class Reciever extends Observable implements Runnable{
                 System.out.println("Listening on port:" +Config.MY_PORT);
                 try{
                 socket.receive(dgp);
-                }catch(NullPointerException e){
-                    System.out.println("NUll pointer exception");
-                }
+                
                 if(incomingData.length>0){
                 //String recievedString = (new String(dgp.getData())+":"+dgp.getAddress().getHostAddress()+":"+dgp.getSocketAddress());
                 UDPResponse response = new UDPResponse(dgp.getData(), dgp.getAddress().getHostAddress(), dgp.getPort());
@@ -62,6 +60,9 @@ public class Reciever extends Observable implements Runnable{
                     setChanged();
                     notifyObservers(response);
                     clearChanged();
+                }
+                }catch(NullPointerException e){
+                    System.out.println("NUll pointer exception");
                 }
                 
                 

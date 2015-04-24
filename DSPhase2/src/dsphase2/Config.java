@@ -28,16 +28,16 @@ public class Config {
     
     static ConfigWindow CONFIG_WINDOW; 
     
-    static  String MY_IP = "10.8.108.169";
+    static  String MY_IP = "127.0.0.1";
 
-    static  int MY_PORT = 5002;
+    static  int MY_PORT = 500;
 
-    static  String MY_NAME = "Sasikala";
+    static  String MY_NAME = "S";
     static  boolean isSuper = false;
     static boolean isWebService;
     
 
-    static  String BOOTSTRAP_IP = "10.8.108.169";
+    static  String BOOTSTRAP_IP = "127.0.0.1";
 
     static int noOfNodes = 1;
     static int myNodeNumber = 0;

@@ -22,7 +22,7 @@ public class Message {
                 break;
             case JOIN:message=appendLength("JOIN"+" "+ip+" "+port+" "+name);
                 break;
-            case JOINOK: message=appendLength("JOINOK"+" "+0);
+            case JOINOK: message=appendLength("JOINOK"+" "+ip+" "+port+" "+0);
                 break;
             case FILES:
                 message = appendLength("FILES"+" "+ip+" "+port+" "+name);
