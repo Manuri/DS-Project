@@ -540,8 +540,10 @@ public class Node extends Observable implements Observer {
                     outGoingMessage = (new Message(MessageType.LEAVEOK, myIp, myPort)).getMessage();
                     sendMessage(outGoingMessage, requesterIp, requesterPort);
                     String[] ipPort = msg[length - 1].split(":");
-                    outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, getMyPrefixedName())).getMessage();
-                    sendMessage(outGoingMessage, ipPort[0], Integer.parseInt(ipPort[1]));
+                    if (!superPeers.contains(msg[length - 1])) {
+                        outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, getMyPrefixedName())).getMessage();
+                        sendMessage(outGoingMessage, ipPort[0], Integer.parseInt(ipPort[1]));
+                    }
                 }
                 break;
             case LEAVEOK:
