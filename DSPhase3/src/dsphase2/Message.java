@@ -22,7 +22,7 @@ public class Message {
                 break;
             case JOIN:message=appendLength("JOIN"+" "+ip+" "+port+" "+name);
                 break;
-            case JOINOK: message=appendLength("JOINOK"+" "+0);
+            case JOINOK: message=appendLength("JOINOK"+" "+ip+" "+port+" "+0);
                 break;
             case FILES:
                 message = appendLength("FILES"+" "+ip+" "+port+" "+name);
@@ -63,6 +63,16 @@ public class Message {
             //case SEROK: message=appendLength("SEROK"+" "+"0"+" "+searchKey);
             case SEROK: message=appendLength("SEROK"+" "+"0"+" "+searchKey+" "+intermediateIp+" "+intermediatePort);
                 break;        
+        }
+    }
+    
+    public Message(MessageType type, String ip, int port){
+        switch (type){
+            case LEAVE:
+                message = appendLength("LEAVE"+" "+ip+" "+port);
+                break;
+            case LEAVEOK:
+                message = appendLength("LEAVEOK"+" "+ip+" "+port);
         }
     }
     

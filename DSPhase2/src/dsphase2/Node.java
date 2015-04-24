@@ -311,7 +311,7 @@ public class Node extends Observable implements Observer {
                 } else {
                     name = "NORMAL" + name;
                 }
-                joinRequestSentPeers.put(requesterIp, requesterPort);
+                
                 outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, name)).getMessage();
                 sendMessage(outGoingMessage, requesterIp, requesterPort);
 

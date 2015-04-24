@@ -47,16 +47,13 @@ public class Reciever extends Observable implements Runnable {
             DatagramPacket dgp = new DatagramPacket(incomingData, incomingData.length);
 
             try {
-                System.out.println("Listening on port:" + Config.MY_PORT);
-                try {
-                    socket.receive(dgp);
-                } catch (NullPointerException e) {
-                    System.out.println("NUll pointer exception");
-                }
-                if (incomingData.length > 0) {
-                    //String recievedString = (new String(dgp.getData())+":"+dgp.getAddress().getHostAddress()+":"+dgp.getSocketAddress());
-                    UDPResponse response = new UDPResponse(dgp.getData(), dgp.getAddress().getHostAddress(), dgp.getPort());
-                    
+                System.out.println("Listening on port:" +Config.MY_PORT);
+                try{
+                socket.receive(dgp);
+                
+                if(incomingData.length>0){
+                //String recievedString = (new String(dgp.getData())+":"+dgp.getAddress().getHostAddress()+":"+dgp.getSocketAddress());
+                UDPResponse response = new UDPResponse(dgp.getData(), dgp.getAddress().getHostAddress(), dgp.getPort());
                     
                     System.out.println("Datagram received, received message: " + response.getData());
                     System.out.println("from-"+response.getIpAddress()+":"+response.getPort()+",to-"+Config.MY_IP+":"+Config.MY_PORT);
@@ -66,7 +63,10 @@ public class Reciever extends Observable implements Runnable {
                     clearChanged();                    
                     
                 }
-
+                }catch(NullPointerException e){
+                    System.out.println("NUll pointer exception");
+                }
+                
             } catch (IOException ex) {
                 Logger.getLogger(Reciever.class.getName()).log(Level.SEVERE, null, ex);
             }
