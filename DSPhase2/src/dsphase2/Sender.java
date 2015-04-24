@@ -64,6 +64,7 @@ public class Sender {
         PrintWriter outToServer=null;
         BufferedReader inFromServer=null;
         char[] buf=new char[10000];
+        String returnVal = "0";
         try{
             clientSocket = new Socket(bootstrapIP, bootStrapPort);
             
@@ -77,11 +78,14 @@ public class Sender {
 
             inFromServer.read(buf);
             System.out.println(buf); 
+            returnVal = String.valueOf(buf).trim();
         }
         catch(UnknownHostException e){
+            returnVal="-1";
             System.out.println("1:"+e.getMessage());
         } 
-        catch (IOException ex) {            
+        catch (IOException ex) {  
+            returnVal = "-2";
             System.out.println("2:"+ex.getMessage());
         }
         finally{
@@ -100,7 +104,7 @@ public class Sender {
             }
         }
         
-        return String.valueOf(buf).trim();
+        return returnVal;
     }
     
 }

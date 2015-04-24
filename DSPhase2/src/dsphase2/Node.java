@@ -160,6 +160,14 @@ public class Node extends Observable implements Observer {
 
         UpdateTheLog("<Received msg> " + response + " << from BS");
         System.out.println("Response:" + response);
+        
+        if((response.trim()).equals("-1")){
+            unreg();
+            return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+        }
+        else if((response.trim()).equals("-2")){
+            return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+        }else{
         String[] splitted = response.split(" ");
 
         String noOfNodes = splitted[2];
@@ -219,14 +227,9 @@ public class Node extends Observable implements Observer {
                 }
                 addMyFiles(Config.noOfPeersPreset);
                 return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
-
+        
         }
-    }
-
-    private void unregister() {
-        String message = (new Message(MessageType.UNREG, myIp, myPort, myName)).getMessage();
-
-        Sender.getInstance().sendTCPMessage(message);
+        }
     }
 
     private void sendMessage(String message, String peerIp, int peerPort) {
