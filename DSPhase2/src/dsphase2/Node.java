@@ -629,7 +629,7 @@ public class Node extends Observable implements Observer {
         String fileNameString = "\"" + fileName + "\"";
         String message = (new Message(MessageType.SER, searcherIp, searcherPort, fileNameString, hopCount)).getMessage();
         //System.out.println("created message" + message);
-        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        sendMessage(message, peerIp, peerPort);
         //System.out.println("Message sent:" + message);
     }
 
@@ -637,7 +637,7 @@ public class Node extends Observable implements Observer {
         String fileNameString = "\"" + fileName + "\"";
         String message = (new Message(MessageType.SER, searcherIp, searcherPort, fileNameString)).getMessage();
         //System.out.println("created message" + message);
-        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        sendMessage(message, peerIp, peerPort);
         //System.out.println("Message Sent:" + message);
     }
 

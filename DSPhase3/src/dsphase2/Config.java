@@ -46,6 +46,8 @@ public class Config {
     static ArrayList<String> availableFiles = new ArrayList<>(); 
    
     static int TTL = 5;
+    static int noOfPeersPreset = 8;
+    
     public void addNewFile(String fileName){
         availableFiles.add(fileName); 
     }
