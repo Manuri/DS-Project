@@ -318,7 +318,9 @@ public class Node extends Observable implements Observer {
             // for inquire reply: <length INQUIREOK IP_address port_no> 
             case INQUIREOK:
                 inquireResponses--;
+
                 outGoingMessage = (new Message(MessageType.JOIN, myIp, myPort, getMyPrefixedName())).getMessage();
+
                 sendMessage(outGoingMessage, requesterIp, requesterPort);
 
                 //joinRequestSentPeers.put(requesterIp, requesterPort);
@@ -637,7 +639,7 @@ public class Node extends Observable implements Observer {
         String fileNameString = "\"" + fileName + "\"";
         String message = (new Message(MessageType.SER, searcherIp, searcherPort, fileNameString, hopCount)).getMessage();
         //System.out.println("created message" + message);
-        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        sendMessage(message, peerIp, peerPort);
         //System.out.println("Message sent:" + message);
     }
 
@@ -645,7 +647,7 @@ public class Node extends Observable implements Observer {
         String fileNameString = "\"" + fileName + "\"";
         String message = (new Message(MessageType.SER, searcherIp, searcherPort, fileNameString)).getMessage();
         //System.out.println("created message" + message);
-        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        sendMessage(message, peerIp, peerPort);
         //System.out.println("Message Sent:" + message);
     }
 
