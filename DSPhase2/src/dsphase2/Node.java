@@ -674,8 +674,8 @@ public class Node extends Observable implements Observer {
         String[] ipPort;
         String message;
         String leaveSentNode;
-        ArrayList<String> superPeerList = (ArrayList<String>)superPeers;
-        ArrayList<String> childList = (ArrayList<String>)childNodes;
+        ArrayList<String> superPeerList = (ArrayList<String>) superPeers;
+        ArrayList<String> childList = (ArrayList<String>) childNodes;
         //if I am a superNode 
         if (isSuper) {
             //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
@@ -775,13 +775,8 @@ public class Node extends Observable implements Observer {
         System.out.println("checking routing table for the key:" + routingTableKey);
         if (routingTable.containsKey(routingTableKey)) {
             System.out.println("key is inside routing table");
-//            immediateRequesterIpPort = routingTable.get(routingTableKey).split(":");
-//            routingTable.remove(routingTableKey);
             iter = (routingTable.get(routingTableKey)).iterator();
-//            while(iter.hasNext()){
-//                immediateRequesterIpPort=(String[])iter.next();
-//                sendMessage(incoming, immediateRequesterIpPort[0], Integer.parseInt(immediateRequesterIpPort[1]));
-//            }
+
             if (filesFound) {
                 while (iter.hasNext()) {
                     //immediateRequesterIpPort = (String[]) iter.next();
