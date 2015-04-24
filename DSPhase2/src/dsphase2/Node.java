@@ -32,8 +32,8 @@ public class Node extends Observable implements Observer {
     // only available if this is a normal node
     private String mySuperNode;  // supernode = "peer_IP:port_no"
     //only available if this is a super node
-    private ArrayList<String> superPeers = new ArrayList<>();
-    private ArrayList<String> childNodes = new ArrayList<>();
+    private Set<String> superPeers = new HashSet<>();
+    private Set<String> childNodes = new HashSet<>();
     //private HashMap<String, String> routingTable = new HashMap<>();
     private HashSet<String> innerSet = new HashSet<>();
     private HashMap<String, HashSet<String>> routingTable = new HashMap<>();
@@ -408,13 +408,13 @@ public class Node extends Observable implements Observer {
                     }
                     if (isSuper) {
                         //forward the search query to a random peers
-
-                        int randomPeerNumer = getRandomNo(superPeers.size(), superPeers.indexOf(searcherIp + ":" + searcherPort), isSearcherAChild);
+                        ArrayList<String> superPeersList = (ArrayList<String>) superPeers;
+                        int randomPeerNumer = getRandomNo(superPeers.size(), superPeersList.indexOf(searcherIp + ":" + searcherPort), isSearcherAChild);
                         System.out.println("random peer number:" + randomPeerNumer);
                         String[] ipPort;
                         if (randomPeerNumer != -1) {
                             locatable = true;
-                            ipPort = (superPeers.get(randomPeerNumer)).split(":");
+                            ipPort = (superPeersList.get(randomPeerNumer)).split(":");
 
                             ////search(fileKey, searcherIp, searcherPort, ipPort[0], Integer.parseInt(ipPort[1]), hopCount);
                             System.out.println("adding to routing table,key:" + ipPort[0] + ipPort[1] + fileKey + "   value:" + searcherIp + ":" + searcherPort);
@@ -633,8 +633,7 @@ public class Node extends Observable implements Observer {
         if (isSuper) {
             int noOfSuperPeers = superPeers.size();
             int randomSuperPeer = getRandomNo(noOfSuperPeers);
-            System.out.println("Selected super peer to send search message: " + superPeers.get(randomSuperPeer));
-            ipPort = (superPeers.get(randomSuperPeer)).split(":");
+            ipPort = (((ArrayList<String>) superPeers).get(randomSuperPeer)).split(":");
         } else {
             ipPort = mySuperNode.split(":");
         }
@@ -675,6 +674,8 @@ public class Node extends Observable implements Observer {
         String[] ipPort;
         String message;
         String leaveSentNode;
+        ArrayList<String> superPeerList = (ArrayList<String>)superPeers;
+        ArrayList<String> childList = (ArrayList<String>)childNodes;
         //if I am a superNode 
         if (isSuper) {
             //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
@@ -685,7 +686,7 @@ public class Node extends Observable implements Observer {
                 if (noOfchildren > 0) {
                     int randomChildNo = getRandomNo(noOfchildren - 1);
                     message = (new Message(MessageType.LEAVE, myIp, myPort)).getMessage();
-                    leaveSentNode = childNodes.get(randomChildNo);
+                    leaveSentNode = childList.get(randomChildNo);
                     String[] childIpPort = leaveSentNode.split(":");
                     String newSuperChild = leaveSentNode;
                     sendMessage(message, childIpPort[0], Integer.parseInt(childIpPort[1]));
@@ -693,14 +694,14 @@ public class Node extends Observable implements Observer {
 
                     for (int i = 0; i < randomChildNo; i++) {
                         message = (new Message(MessageType.LEAVE, myIp, myPort, newSuperChild)).getMessage();
-                        leaveSentNode = childNodes.get(i);
+                        leaveSentNode = childList.get(i);
                         ipPort = leaveSentNode.split(":");
                         sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
                         leaveSentNodes.add(leaveSentNode);
                     }
                     for (int i = randomChildNo + 1; i < noOfchildren; i++) {
                         message = (new Message(MessageType.LEAVE, myIp, myPort, newSuperChild)).getMessage();
-                        leaveSentNode = childNodes.get(i);
+                        leaveSentNode = childList.get(i);
                         ipPort = leaveSentNode.split(":");
                         sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
                         leaveSentNodes.add(leaveSentNode);
@@ -708,7 +709,7 @@ public class Node extends Observable implements Observer {
 
                     //inform the onlt peer about the newly promoted child
                     message = (new Message(MessageType.LEAVE, myIp, myPort, newSuperChild)).getMessage();
-                    leaveSentNode = superPeers.get(0);
+                    leaveSentNode = superPeerList.get(0);
                     ipPort = leaveSentNode.split(":");
                     sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
                     leaveSentNodes.add(leaveSentNode);
@@ -717,13 +718,13 @@ public class Node extends Observable implements Observer {
             } else {
                 for (int i = 0; i < noOfPeers; i++) {
 
-                    leaveSentNode = superPeers.get(i);
+                    leaveSentNode = superPeerList.get(i);
                     ipPort = leaveSentNode.split(":");
                     if (i < noOfPeers / 2) {
                         //if the index of the super peer in the super peer array list is < length/2 then direct him to join (i+1)th super peer
-                        message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i + 1))).getMessage();
+                        message = (new Message(MessageType.LEAVE, myIp, myPort, superPeerList.get(i + 1))).getMessage();
                     } else {
-                        message = (new Message(MessageType.LEAVE, myIp, myPort, superPeers.get(i - 1))).getMessage();
+                        message = (new Message(MessageType.LEAVE, myIp, myPort, superPeerList.get(i - 1))).getMessage();
                     }
                     leaveSentNodes.add(leaveSentNode);
                     sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
@@ -732,9 +733,9 @@ public class Node extends Observable implements Observer {
                 //send messages to all children saying I am leaving and give them the ip and port of a super peer to connect with
                 int noOfChildren = childNodes.size();
                 for (int i = 0; i < noOfChildren; i++) {
-                    leaveSentNode = childNodes.get(i);
+                    leaveSentNode = childList.get(i);
                     ipPort = leaveSentNode.split(":");
-                    String randomSuperNode = superPeers.get(getRandomNo(noOfPeers));
+                    String randomSuperNode = superPeerList.get(getRandomNo(noOfPeers));
                     message = (new Message(MessageType.LEAVE, myIp, myPort, randomSuperNode)).getMessage();
                     leaveSentNodes.add(leaveSentNode);
                     sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
