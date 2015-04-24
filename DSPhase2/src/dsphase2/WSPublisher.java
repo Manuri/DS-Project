@@ -32,8 +32,4 @@ public class WSPublisher {
         Endpoint.publish("http://" + ip + ":" + port + "/ws/netlingoservice", new ReceiverWebServiceImpl());
     }
 
-    public static void main(String[] args) {
-	  Endpoint.publish("http://localhost:9999/ws/netlingoservice", new ReceiverWebServiceImpl());
-        //publishWebService("localhost", 9999);
-    }
 }

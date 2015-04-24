@@ -76,7 +76,7 @@ public class Sender {
            buf=new char[10000];
 
             inFromServer.read(buf);
-            //System.out.println(buf); 
+            System.out.println(buf); 
         }
         catch(UnknownHostException e){
             System.out.println("1:"+e.getMessage());

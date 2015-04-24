@@ -69,9 +69,5 @@ public class SenderWebServiceClient {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-
-       //testWebService("localhost",9999,"Amaya");
-        //sendMessage("My name is Amaya","localhost", 9999);
-    }
+    
 }

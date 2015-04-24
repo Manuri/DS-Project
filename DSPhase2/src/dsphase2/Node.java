@@ -421,7 +421,7 @@ public class Node extends Observable implements Observer {
                     }
                     if (isSuper) {
                         //forward the search query to a random peers
-                        ArrayList<String> superPeersList = (ArrayList<String>) superPeers;
+                        ArrayList<String> superPeersList = new ArrayList<String>(superPeers);
                         int randomPeerNumer = getRandomNo(superPeers.size(), superPeersList.indexOf(searcherIp + ":" + searcherPort), isSearcherAChild);
                         System.out.println("random peer number:" + randomPeerNumer);
                         String[] ipPort;
@@ -564,6 +564,7 @@ public class Node extends Observable implements Observer {
                 if (leaveSentNodes.isEmpty()) {
                     //unreg from bootstrap
                     System.out.println("Peer " + myName + " is leaving...");
+                    unreg();
                     System.exit(0);
                 }
                 break;
@@ -651,7 +652,7 @@ public class Node extends Observable implements Observer {
         if (isSuper) {
             int noOfSuperPeers = superPeers.size();
             int randomSuperPeer = getRandomNo(noOfSuperPeers);
-            ipPort = (((ArrayList<String>) superPeers).get(randomSuperPeer)).split(":");
+            ipPort = (((new ArrayList<>(superPeers))).get(randomSuperPeer)).split(":");
         } else {
             ipPort = mySuperNode.split(":");
         }
@@ -692,8 +693,8 @@ public class Node extends Observable implements Observer {
         String[] ipPort;
         String message;
         String leaveSentNode;
-        ArrayList<String> superPeerList = (ArrayList<String>) superPeers;
-        ArrayList<String> childList = (ArrayList<String>) childNodes;
+        ArrayList<String> superPeerList = new ArrayList<>(superPeers);
+        ArrayList<String> childList = new ArrayList<>(childNodes);
         //if I am a superNode 
         if (isSuper) {
             //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
@@ -768,6 +769,11 @@ public class Node extends Observable implements Observer {
             sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
         }
         System.out.println("Leave message sent to " + leaveSentNodes.size() + " peers");
+    }
+    
+    private void unreg(){
+        String message = (new Message(MessageType.UNREG,myIp,myPort,myName)).getMessage();
+        Sender.getInstance().sendTCPMessage(message);
     }
 
     private void forwardSEROKToImmediateRequester(String incoming, String senderIp, int senderPort, boolean filesFound) {
