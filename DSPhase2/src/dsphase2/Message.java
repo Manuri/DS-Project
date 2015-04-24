@@ -57,6 +57,16 @@ public class Message {
         }
     }
     
+    public Message(MessageType type, String ip, int port){
+        switch (type){
+            case LEAVE:
+                message = appendLength("LEAVE"+" "+ip+" "+port);
+                break;
+            case LEAVEOK:
+                message = appendLength("LEAVEOK"+" "+ip+" "+port);
+        }
+    }
+    
     public Message(MessageType type, String ip, int port, String fileNanme, int hops){
         switch(type){
             case SER:
