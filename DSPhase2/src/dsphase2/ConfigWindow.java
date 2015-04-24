@@ -53,7 +53,7 @@ public class ConfigWindow extends JFrame implements Observer {
         nodeTypeGroup.add(jRadioButton2);
 
         ButtonGroup communicationModeGroup = new ButtonGroup();
-        jRadioButton3.setSelected(true);
+        jRadioButton4.setSelected(true);
         communicationModeGroup.add(jRadioButton3);
         communicationModeGroup.add(jRadioButton4);
 
@@ -63,7 +63,6 @@ public class ConfigWindow extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
         if (arg instanceof UDPResponse) {
             jTextArea1.append("[Netlingo]: " + ((UDPResponse) arg).getData().trim() + " [" + getTimeStamp() + "] \n");
         } else {
@@ -207,7 +206,7 @@ public class ConfigWindow extends JFrame implements Observer {
                 }
                 n1 = Node.getInstance(Config.MY_IP, Config.MY_PORT, Config.MY_NAME);
                 n1.start();
-
+                                
             }
         });
 

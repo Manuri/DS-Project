@@ -56,7 +56,7 @@ public class Node extends Observable implements Observer {
         isSuper = Config.isSuper;
         // joinRequestSentPeers = new HashMap<>();
         //addMyFiles(4);
-        this.addObserver(Config.CONFIG_WINDOW);
+        this.addObserver(Config.CONFIG_WINDOW);      
     }
 
     private void addMyFiles(int numberOfNodes) {
@@ -231,7 +231,11 @@ public class Node extends Observable implements Observer {
 
     private void sendMessage(String message, String peerIp, int peerPort) {
         //System.out.println("sending message: " + message + " from:" + Config.MY_IP + ":" + Config.MY_PORT + " to:" + peerIp + ":" + peerPort);
-        Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        if(Config.isWebService){
+            SenderWebServiceClient.getInstance().sendMessage(message, peerIp, peerPort);
+        }else{
+            Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
+        }
     }
 
     private int[] getRandomTwo(int number) {
@@ -282,8 +286,17 @@ public class Node extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
-        UDPResponse receivedMessage = (UDPResponse) arg;
-        String incoming = receivedMessage.getData().trim();
+        
+        //UDPResponse receivedMessage = (UDPResponse) arg;
+        String incoming;
+        if(Config.isWebService){
+            incoming = (String)arg;
+        }
+        else{
+            UDPResponse receivedMessage = (UDPResponse) arg;
+            incoming = receivedMessage.getData().trim();
+        }
+        
         //System.out.println("incoming message:" + incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
@@ -574,10 +587,15 @@ public class Node extends Observable implements Observer {
 
         if (response.isSucess()) {
 
-            Thread reciever = new Thread(Reciever.getInstance());
-            reciever.start();
+            if(Config.isWebService){
+                WSPublisher.getInstance().publishWebService(myIp, myPort);
+            }
+            else{
+                Thread reciever = new Thread(Reciever.getInstance());
+                reciever.start();                
+            }
 
-            //now join the network
+           //now join the network
             String[] peerIPs = response.getPeerIps();
             System.out.println("Peer IPs");
             if (peerIPs != null) {

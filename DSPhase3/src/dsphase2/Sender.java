@@ -79,10 +79,10 @@ public class Sender {
             //System.out.println(buf); 
         }
         catch(UnknownHostException e){
-            System.out.println(e.getMessage());
+            System.out.println("1:"+e.getMessage());
         } 
-        catch (IOException ex) {
-            System.out.println(ex.getMessage());
+        catch (IOException ex) {            
+            System.out.println("2:"+ex.getMessage());
         }
         finally{
             try {
@@ -96,7 +96,7 @@ public class Sender {
                     clientSocket.close();
                 
             } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+                System.out.println("3:"+ex.getMessage());
             }
         }
         
