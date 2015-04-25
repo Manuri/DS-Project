@@ -56,7 +56,7 @@ public class Node extends Observable implements Observer {
         isSuper = Config.isSuper;
         // joinRequestSentPeers = new HashMap<>();
         //addMyFiles(4);
-        this.addObserver(Config.CONFIG_WINDOW);      
+        this.addObserver(Config.CONFIG_WINDOW);
     }
 
     private void addMyFiles(int numberOfNodes) {
@@ -160,83 +160,82 @@ public class Node extends Observable implements Observer {
 
         UpdateTheLog("<Received msg> " + response + " << from BS");
         System.out.println("Response:" + response);
-        
-        if((response.trim()).equals("-1")){
+
+        if ((response.trim()).equals("-1")) {
             unreg();
             return new RegisterResponse(MessageType.REG_FAILURE, null, null);
-        }
-        else if((response.trim()).equals("-2")){
+        } else if ((response.trim()).equals("-2")) {
             return new RegisterResponse(MessageType.REG_FAILURE, null, null);
-        }else{
-        String[] splitted = response.split(" ");
+        } else {
+            String[] splitted = response.split(" ");
 
-        String noOfNodes = splitted[2];
-        Config.myNodeNumber = Integer.parseInt(noOfNodes.trim());
-        Config.noOfNodes = Config.myNodeNumber + 1;
+            String noOfNodes = splitted[2];
+            Config.myNodeNumber = Integer.parseInt(noOfNodes.trim());
+            Config.noOfNodes = Config.myNodeNumber + 1;
 
-        String[] peerIps;
-        int[] peerPorts;
+            String[] peerIps;
+            int[] peerPorts;
 
-        // System.out.println(noOfNodes);
-        switch (noOfNodes.trim()) {
-            case "0":
-                isSuper = true;
-                addMyFiles(Config.noOfPeersPreset);
-                return new RegisterResponse(MessageType.REG_SUCCESS, null, null);
-            // break;
-            case "1":
-                isSuper = true;
-                peerIps = new String[1];
-                peerPorts = new int[1];
-                peerIps[0] = splitted[3];
-                peerPorts[0] = Integer.parseInt(splitted[4]);
-                addMyFiles(Config.noOfPeersPreset);
-                //  System.out.println(joinNetwork(peerIps[0], peerPorts[0]));
-                return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
-            //  break;
-            case "9996":
-                System.out.println("Failed, can’t register. BS full.");
-                UpdateTheLog("Failed, can’t register. BS full.");
-                return new RegisterResponse(MessageType.REG_FAILURE, null, null);
-            //     break;
-            case "9997":
-                System.out.println("Failed, registered to another user, try a different IP and port");
-                UpdateTheLog("Failed, registered to another user, try a different IP and port");
-                return new RegisterResponse(MessageType.REG_FAILURE, null, null);
-            //  break;
-            case "9998":
-                System.out.println("Failed, already registered to you, unregister first");
-                UpdateTheLog("Failed, already registered to you, unregister first");
-                return new RegisterResponse(MessageType.REG_FAILURE, null, null);
-            // break;
-            case "9999":
-                System.out.println("Failed, there is some error in the command");
-                UpdateTheLog("Failed, there is some error in the command");
-                return new RegisterResponse(MessageType.REG_FAILURE, null, null);
-            //  break;
+            // System.out.println(noOfNodes);
+            switch (noOfNodes.trim()) {
+                case "0":
+                    isSuper = true;
+                    addMyFiles(Config.noOfPeersPreset);
+                    return new RegisterResponse(MessageType.REG_SUCCESS, null, null);
+                // break;
+                case "1":
+                    isSuper = true;
+                    peerIps = new String[1];
+                    peerPorts = new int[1];
+                    peerIps[0] = splitted[3];
+                    peerPorts[0] = Integer.parseInt(splitted[4]);
+                    addMyFiles(Config.noOfPeersPreset);
+                    //  System.out.println(joinNetwork(peerIps[0], peerPorts[0]));
+                    return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
+                //  break;
+                case "9996":
+                    System.out.println("Failed, can’t register. BS full.");
+                    UpdateTheLog("Failed, can’t register. BS full.");
+                    return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                //     break;
+                case "9997":
+                    System.out.println("Failed, registered to another user, try a different IP and port");
+                    UpdateTheLog("Failed, registered to another user, try a different IP and port");
+                    return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                //  break;
+                case "9998":
+                    System.out.println("Failed, already registered to you, unregister first");
+                    UpdateTheLog("Failed, already registered to you, unregister first");
+                    return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                // break;
+                case "9999":
+                    System.out.println("Failed, there is some error in the command");
+                    UpdateTheLog("Failed, there is some error in the command");
+                    return new RegisterResponse(MessageType.REG_FAILURE, null, null);
+                //  break;
 
-            default:
-                int number = Integer.parseInt(noOfNodes.trim());
-                peerIps = new String[number];
-                peerPorts = new int[number];
-                System.out.println("number:" + number);
-                for (int i = 1; i < number + 1; i++) {
-                    peerIps[i - 1] = splitted[3 * i];
-                    peerPorts[i - 1] = Integer.parseInt(splitted[3 * i + 1]);
-                    //System.out.println(peerIps[i - 1] + "," + peerPorts[i - 1]);
-                }
-                addMyFiles(Config.noOfPeersPreset);
-                return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
-        
-        }
+                default:
+                    int number = Integer.parseInt(noOfNodes.trim());
+                    peerIps = new String[number];
+                    peerPorts = new int[number];
+                    System.out.println("number:" + number);
+                    for (int i = 1; i < number + 1; i++) {
+                        peerIps[i - 1] = splitted[3 * i];
+                        peerPorts[i - 1] = Integer.parseInt(splitted[3 * i + 1]);
+                        //System.out.println(peerIps[i - 1] + "," + peerPorts[i - 1]);
+                    }
+                    addMyFiles(Config.noOfPeersPreset);
+                    return new RegisterResponse(MessageType.REG_SUCCESS, peerIps, peerPorts);
+
+            }
         }
     }
 
     private void sendMessage(String message, String peerIp, int peerPort) {
         //System.out.println("sending message: " + message + " from:" + Config.MY_IP + ":" + Config.MY_PORT + " to:" + peerIp + ":" + peerPort);
-        if(Config.isWebService){
+        if (Config.isWebService) {
             SenderWebServiceClient.getInstance().sendMessage(message, peerIp, peerPort);
-        }else{
+        } else {
             Sender.getInstance().sendUDPMessage(message, peerIp, peerPort);
         }
     }
@@ -289,17 +288,16 @@ public class Node extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         //Process incoming message
-        
+
         //UDPResponse receivedMessage = (UDPResponse) arg;
         String incoming;
-        if(Config.isWebService){
-            incoming = (String)arg;
-        }
-        else{
+        if (Config.isWebService) {
+            incoming = (String) arg;
+        } else {
             UDPResponse receivedMessage = (UDPResponse) arg;
             incoming = receivedMessage.getData().trim();
         }
-        
+
         //System.out.println("incoming message:" + incoming);
         String[] msg = incoming.split(" ");
         MessageType msgType = MessageType.valueOf(msg[1]);
@@ -540,14 +538,21 @@ public class Node extends Observable implements Observer {
                     sendMessage(outGoingMessage, requesterIp, requesterPort);
                 } // if is is a super node that is leaving and if it doesn't have two peers
                 //this will only be sent to children
-                //I have to become a superchild
+                
                 else if (length == 4) {
-                    Config.isSuper = true;
-                    isSuper = true;
-                    System.out.println(myName + " got promoted to super");
-                    mySuperNode = null;
-                    outGoingMessage = (new Message(MessageType.LEAVEOK, myIp, myPort)).getMessage();
-                    sendMessage(outGoingMessage, requesterIp, requesterPort);
+                    if (isSuper) {
+                        outGoingMessage = (new Message(MessageType.LEAVEOK, myIp, myPort)).getMessage();
+                        sendMessage(outGoingMessage, requesterIp, requesterPort);
+                    } 
+                    //I have to become a superchild
+                    else {
+                        Config.isSuper = true;
+                        isSuper = true;
+                        System.out.println(myName + " got promoted to super");
+                        mySuperNode = null;
+                        outGoingMessage = (new Message(MessageType.LEAVEOK, myIp, myPort)).getMessage();
+                        sendMessage(outGoingMessage, requesterIp, requesterPort);
+                    }
                 } //if it is a super node that is leaving, take the ip and port it sends and send a JOIN message to it asking to connect
                 else {
                     if (isSuper) {
@@ -591,15 +596,14 @@ public class Node extends Observable implements Observer {
 
         if (response.isSucess()) {
 
-            if(Config.isWebService){
+            if (Config.isWebService) {
                 WSPublisher.getInstance().publishWebService(myIp, myPort);
-            }
-            else{
+            } else {
                 Thread reciever = new Thread(Reciever.getInstance());
-                reciever.start();                
+                reciever.start();
             }
 
-           //now join the network
+            //now join the network
             String[] peerIPs = response.getPeerIps();
             System.out.println("Peer IPs");
             if (peerIPs != null) {
@@ -702,7 +706,10 @@ public class Node extends Observable implements Observer {
         if (isSuper) {
             //send messages to all peers saying I am leaving and give them the ip and port of another super peer to connect with
             int noOfPeers = superPeers.size();
-            if (noOfPeers == 1) {
+            if (noOfPeers == 0) {
+                unreg();
+                System.exit(0);
+            } else if (noOfPeers == 1) {
                 //select one of my children to be a super peer
                 int noOfchildren = childNodes.size();
                 if (noOfchildren > 0) {
@@ -735,8 +742,14 @@ public class Node extends Observable implements Observer {
                     ipPort = leaveSentNode.split(":");
                     sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
                     leaveSentNodes.add(leaveSentNode);
+                } else {
+                    //inform the onlt peer that I'm leaving
+                    message = (new Message(MessageType.LEAVE, myIp, myPort)).getMessage();
+                    leaveSentNode = superPeerList.get(0);
+                    ipPort = leaveSentNode.split(":");
+                    sendMessage(message, ipPort[0], Integer.parseInt(ipPort[1]));
+                    leaveSentNodes.add(leaveSentNode);
                 }
-
             } else {
                 for (int i = 0; i < noOfPeers; i++) {
 
@@ -773,9 +786,9 @@ public class Node extends Observable implements Observer {
         }
         System.out.println("Leave message sent to " + leaveSentNodes.size() + " peers");
     }
-    
-    private void unreg(){
-        String message = (new Message(MessageType.UNREG,myIp,myPort,myName)).getMessage();
+
+    private void unreg() {
+        String message = (new Message(MessageType.UNREG, myIp, myPort, myName)).getMessage();
         Sender.getInstance().sendTCPMessage(message);
     }
 
