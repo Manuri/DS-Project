@@ -592,16 +592,11 @@ public class Node extends Observable implements Observer {
                         forwardSEROKToImmediateRequester(incoming, parts[parts.length - 2], Integer.parseInt(parts[parts.length - 1].trim()), true);
 
                 }
+                
+                
                 break;
             case LEAVE:
-                int nodeDegree;
-                if(isSuper){
-                    nodeDegree = childNodes.size()+superPeers.size();
-                }else{
-                    nodeDegree = 1; 
-                }
-                    
-               System.out.println("Noden degree = "+nodeDegree); 
+                
                 
                 int length = msg.length;
                 //if its just a child asking to leave, remove him from the childNodes list 
@@ -659,26 +654,7 @@ public class Node extends Observable implements Observer {
                 }
                 break;
             case LEAVEOK:
-                if(isSuper){
-                    nodeDegree = childNodes.size()+superPeers.size();
-                }else{
-                    nodeDegree = 1; 
-                }
-                    
-                UpdateTheLog("Noden degree = "+nodeDegree); 
-                UpdateTheLog("************Statistics**********");
-                UpdateTheLog("No of received search msgs = "+noOfReceivedSearchMsgs);
-                UpdateTheLog("No of answered search msgs = "+noOfAnsweredSearchMsgs);
-                UpdateTheLog("No of forwarded search msgs = "+noOfForwardedSearchMsgs);
-                UpdateTheLog("Routing table size = "+routingTable.size());
-                UpdateTheLog("********************************");
-                System.out.println("Noden degree = "+nodeDegree); 
-                System.out.println("************Statistics**********");
-                System.out.println("No of received search msgs = "+noOfReceivedSearchMsgs);
-                System.out.println("No of answered search msgs = "+noOfAnsweredSearchMsgs);
-                System.out.println("No of forwarded search msgs = "+noOfForwardedSearchMsgs);
-                System.out.println("Routing table size = "+routingTable.size());
-                System.out.println("********************************");
+               
                 leaveSentNodes.remove(requesterIp + ":" + requesterPort);
                 if (leaveSentNodes.isEmpty()) {
                     //unreg from bootstrap
@@ -688,6 +664,7 @@ public class Node extends Observable implements Observer {
                 }
                 break;
         }
+        printStat();
 
     }
 
@@ -910,5 +887,29 @@ public class Node extends Observable implements Observer {
         setChanged();
         notifyObservers(msg);
         clearChanged();
+    }
+    
+    public void printStat(){
+        int nodeDegree; 
+        if(isSuper){
+                    nodeDegree = childNodes.size()+superPeers.size();
+                }else{
+                    nodeDegree = 1; 
+                }
+                    
+                UpdateTheLog("Noden degree = "+nodeDegree); 
+                UpdateTheLog("************Statistics**********");
+                UpdateTheLog("No of received search msgs = "+noOfReceivedSearchMsgs);
+                UpdateTheLog("No of answered search msgs = "+noOfAnsweredSearchMsgs);
+                UpdateTheLog("No of forwarded search msgs = "+noOfForwardedSearchMsgs);
+                UpdateTheLog("Routing table size = "+routingTable.size());
+                UpdateTheLog("********************************");
+                System.out.println("Noden degree = "+nodeDegree); 
+                System.out.println("************Statistics**********");
+                System.out.println("No of received search msgs = "+noOfReceivedSearchMsgs);
+                System.out.println("No of answered search msgs = "+noOfAnsweredSearchMsgs);
+                System.out.println("No of forwarded search msgs = "+noOfForwardedSearchMsgs);
+                System.out.println("Routing table size = "+routingTable.size());
+                System.out.println("********************************");
     }
 }
