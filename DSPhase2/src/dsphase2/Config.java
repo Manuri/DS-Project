@@ -37,7 +37,7 @@ public class Config {
     static boolean isWebService=false;
     
 
-    static  String BOOTSTRAP_IP = "10.8.97.72";
+    static  String BOOTSTRAP_IP = "127.0.0.1";
 
     static int noOfNodes = 1;
     static int myNodeNumber = 0;

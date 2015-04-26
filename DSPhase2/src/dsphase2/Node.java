@@ -162,9 +162,9 @@ public class Node extends Observable implements Observer {
         System.out.println("Response:" + response);
 
         if ((response.trim()).equals("-1")) {
-            unreg();
             return new RegisterResponse(MessageType.REG_FAILURE, null, null);
         } else if ((response.trim()).equals("-2")) {
+            unreg();
             return new RegisterResponse(MessageType.REG_FAILURE, null, null);
         } else {
             String[] splitted = response.split(" ");
@@ -273,6 +273,15 @@ public class Node extends Observable implements Observer {
         int value;
         while ((value = getRandomNo(number)) == exception);
         return value;
+    }
+
+    private int getIndex(ArrayList<String> list, String string) {
+        for (int i = 0; i < list.size(); i++) {
+            if (string.equals(list.get(i))) {
+                return i;
+            }
+        }
+        return -1;
     }
     //my files
     //stored as an invereted index
@@ -423,7 +432,9 @@ public class Node extends Observable implements Observer {
                     if (isSuper) {
                         //forward the search query to a random peers
                         ArrayList<String> superPeersList = new ArrayList<String>(superPeers);
-                        int randomPeerNumer = getRandomNo(superPeers.size(), superPeersList.indexOf(searcherIp + ":" + searcherPort), isSearcherAChild);
+
+                        //int randomPeerNumer = getRandomNo(superPeers.size(), superPeersList.indexOf(searcherIp + ":" + searcherPort), isSearcherAChild);
+                        int randomPeerNumer = getRandomNo(superPeers.size(), getIndex(superPeersList, searcherIp + ":" + searcherPort), isSearcherAChild);
                         System.out.println("random peer number:" + randomPeerNumer);
                         String[] ipPort;
                         if (randomPeerNumer != -1) {
@@ -538,13 +549,11 @@ public class Node extends Observable implements Observer {
                     sendMessage(outGoingMessage, requesterIp, requesterPort);
                 } // if is is a super node that is leaving and if it doesn't have two peers
                 //this will only be sent to children
-                
                 else if (length == 4) {
                     if (isSuper) {
                         outGoingMessage = (new Message(MessageType.LEAVEOK, myIp, myPort)).getMessage();
                         sendMessage(outGoingMessage, requesterIp, requesterPort);
-                    } 
-                    //I have to become a superchild
+                    } //I have to become a superchild
                     else {
                         Config.isSuper = true;
                         isSuper = true;
@@ -641,13 +650,11 @@ public class Node extends Observable implements Observer {
                         } else {
                             //peer = getRandomNo(peerIPs.length);
                             int peers = peerIPs.length;
-                            if (peers == 1){
+                            if (peers == 1) {
                                 peer = 0;
-                            }
-                            else if (peers == 2){
+                            } else if (peers == 2) {
                                 peer = 2;
-                            }
-                            else{
+                            } else {
                                 peer = peers - 3;
                             }
                         }
@@ -812,8 +819,10 @@ public class Node extends Observable implements Observer {
         String fileString = "", message;
         if (filesFound) {
             key = parts[6];
-            fileString = parts[7];
-            for (int i = 8; i < parts.length - 2; i++) {
+//            fileString = parts[7];
+//            for (int i = 8; i < parts.length - 2; i++) {
+            fileString = key;
+            for (int i = 7; i < parts.length - 2; i++) {
                 fileString += " " + parts[i];
             }
         } else {

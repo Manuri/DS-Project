@@ -4,14 +4,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/MessageType.java</file>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/Network.java</file>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/Sender.java</file>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/Reciever.java</file>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/UDPResponse.java</file>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/ConfigWindow.java</file>
+            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/SenderWebServiceClient.java</file>
+            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/WSPublisher.java</file>
             <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/Node.java</file>
-            <file>file:/F:/CSE/Semester%208/Distributed%20Systems/MiniProject/DSPhase2/src/dsphase2/Config.java</file>
         </group>
     </open-files>
 </project-private>
