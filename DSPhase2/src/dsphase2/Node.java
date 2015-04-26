@@ -639,7 +639,17 @@ public class Node extends Observable implements Observer {
                         if (peerIPs.length == 1) {
                             peer = 0;
                         } else {
-                            peer = getRandomNo(peerIPs.length);
+                            //peer = getRandomNo(peerIPs.length);
+                            int peers = peerIPs.length;
+                            if (peers == 1){
+                                peer = 0;
+                            }
+                            else if (peers == 2){
+                                peer = 2;
+                            }
+                            else{
+                                peer = peers - 3;
+                            }
                         }
                         inquireResponses = 1;
                         System.out.println("random peer: " + peerIPs[peer]);
