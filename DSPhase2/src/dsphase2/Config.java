@@ -30,7 +30,7 @@ public class Config {
     
     static  String MY_IP = "127.0.0.1";
 
-    static  int MY_PORT = 5001;
+    static  int MY_PORT = 500;
 
     static  String MY_NAME = "S";
     static  boolean isSuper = false;

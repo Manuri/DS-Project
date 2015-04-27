@@ -284,12 +284,12 @@ public class Node extends Observable implements Observer {
         int count = 0;
         int fileNameSize = terms.length;
         if (fileNameSize > 2) {
-            addTermFile(readLine.toLowerCase(), fileName);
+            addTermFile(readLine.toLowerCase().replace(" ", "_"), fileName);
         }
         for (String term : terms) {
-            addTermFile(term, fileName);
+            addTermFile(term.replace(" ", "_"), fileName);
             if (count > 0) {
-                addTermFile(terms[count - 1] + " " + term, fileName);
+                addTermFile(terms[count - 1]+ "_" + term, fileName);
             }
             count++;
         }
@@ -684,6 +684,7 @@ public class Node extends Observable implements Observer {
         UpdateTheLog("I am Searching for "+fileName);
         searchStarted = true; 
         searchStartTime = System.nanoTime();
+        fileName = fileName.replace(" ", "_");
         String[] ipPort;
         if (isSuper) {
             int noOfSuperPeers = superPeers.size();
