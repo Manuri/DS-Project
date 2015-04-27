@@ -306,7 +306,7 @@ public class Node extends Observable implements Observer {
     }
 
     private void addChildrensFiles(String termsString, String childIp, int childPort) {
-        termsString = termsString.split(" ")[4];
+        termsString = termsString.substring(26);
         System.out.println("Adding child terms:" + termsString);
         Set<String> childTerms = chilrensFiles.keySet();
         String[] terms = termsString.split(",");
